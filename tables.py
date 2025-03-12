@@ -14,7 +14,7 @@ class Attraction(Base):
     address = Column(String(255), nullable=False)
     transport = Column(String(1000), nullable=False)
     rate = Column(Integer, nullable=False, index=True)
-    lan = Column(DECIMAL(9, 6), nullable=False)
+    lat = Column(DECIMAL(9, 6), nullable=False)
     lng = Column(DECIMAL(9, 6), nullable=False)
     mrt_id = Column(Integer, ForeignKey("mrt.id"), nullable=True, index=True)
     category_id = Column(Integer, ForeignKey("category.id"), nullable=False, index=True)

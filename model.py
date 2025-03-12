@@ -75,7 +75,7 @@ def insert2Tables():
                     address = result["address"],
                     transport = result["direction"],
                     rate = result["rate"],
-                    lan = result["latitude"],
+                    lat = result["latitude"],
                     lng = result["longitude"],
                     mrt_id=mrt_id,
                     category_id=category_id
@@ -92,7 +92,7 @@ def insert2Tables():
 
                 db.commit()
     
-    print("✅ 資料插入完成！")
+    print("資料插入完成！")
 
 if __name__ == "__main__":
     insert2Tables()
