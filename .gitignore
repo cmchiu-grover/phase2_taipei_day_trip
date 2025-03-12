@@ -144,3 +144,4 @@ cython_debug/
 # local files
 *.scss
 results_list.csv
+test.py
