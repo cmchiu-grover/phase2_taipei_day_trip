@@ -25,46 +25,33 @@ def get_connection_pool():
 
 def get_attraction_list_rank(page, keyword):
     num_per_page: int = 12
-    
+
     print("Start...")
     conn = get_connection_pool()
     cursor = conn.cursor(dictionary=True)
     cursor.execute(f"""
-                   SELECT 
+                    SELECT 
                     c.*, 
                     d.name AS MRT_NAME, 
                     e.name AS CATEGORY_NAME, 
-                    GROUP_CONCAT(f.url) AS IMAGE_URLS
+                    GROUP_CONCAT(f.url SEPARATOR ',') AS IMAGE_URLS,
+                    CASE 
+                    WHEN d.name = '{keyword}' THEN 1   
+                    WHEN c.name LIKE '%{keyword}%' THEN 2 
+                    ELSE 3                     
+                    END AS sort_order
                     FROM attraction c 
                     LEFT JOIN mrt d ON c.mrt_id = d.id 
                     LEFT JOIN category e ON c.category_id = e.id 
                     LEFT JOIN images f ON c.id = f.attraction_id 
-                    WHERE c.name LIKE '%{keyword}%'
                     GROUP BY c.id 
-                    ORDER BY c.rate DESC, c.id ASC;
+                    ORDER BY sort_order ASC, c.rate DESC, c.id ASC
                    """)
-    results1 = cursor.fetchall()
+    results = cursor.fetchall()
 
-    cursor.execute(f"""
-                   SELECT 
-                    c.*, 
-                    d.name AS MRT_NAME, 
-                    e.name AS CATEGORY_NAME, 
-                    GROUP_CONCAT(f.url) AS IMAGE_URLS
-                    FROM attraction c 
-                    LEFT JOIN mrt d ON c.mrt_id = d.id 
-                    LEFT JOIN category e ON c.category_id = e.id 
-                    LEFT JOIN images f ON c.id = f.attraction_id 
-                    WHERE c.name NOT LIKE '%{keyword}%'
-                    GROUP BY c.id 
-                    ORDER BY c.rate DESC, c.id ASC;
-                   """)
-
-    results2 = cursor.fetchall()
     cursor.close()
     conn.close()  
 
-    results = [*results1, *results2]
 
     print(results)
 
@@ -74,7 +61,7 @@ def get_attraction_list_rank(page, keyword):
 
     start_num = (page)*num_per_page
     end_num = (page+1)*num_per_page
-
+    
     return [results[start_num:end_num], next_page]
 
 
