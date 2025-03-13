@@ -26,7 +26,7 @@ async def booking(request: Request):
 async def thankyou(request: Request):
     return FileResponse("./static/thankyou.html", media_type="text/html")
 
-@app.get("/api/mrt")
+@app.get("/api/mrts")
 def get_mrt_list():
     try:
 
