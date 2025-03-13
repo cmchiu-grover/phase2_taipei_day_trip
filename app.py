@@ -191,5 +191,3 @@ def get_attraction_list(
                 }
                 )
             
-if __name__ == '__main__':
-    uvicorn.run("app:app", port=2330, reload = True)
