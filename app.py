@@ -3,7 +3,7 @@ from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from tables import Attraction, Mrt, Category, Image, Base
 from sqlalchemy.sql import func, case
-from sqlalchemy.orm import joinedload
+from connection_pool import get_attraction_list_rank
 from model import get_db
 import uvicorn
 
@@ -126,58 +126,28 @@ def get_attraction(attractionId: int):
 @app.get("/api/attractions")
 def get_attraction_list(
     page: int = Query(0, ge=0),
-    num_per_page: int = 12,
     keyword: str = None
     ):
     try:
-        with get_db() as db:
-            
-            attraction_query = db.query(Attraction).options(
-                joinedload(Attraction.category),
-                joinedload(Attraction.images),
-                joinedload(Attraction.mrt)
-                )
-                
-            total_count = attraction_query.count()
 
-            if page * num_per_page > total_count:
-                return JSONResponse(
-                status_code=500,
-                content={"error": True, "message": "超出頁數..."}
-                )
+        results = get_attraction_list_rank(page, keyword)[0]
 
-            attractions = attraction_query.all()
-
-        if keyword:
-            keyword_matches = [attraction for attraction in attractions if keyword.lower() in attraction.name.lower() or (attraction.description and keyword.lower() in attraction.description.lower())]
-            keyword_matches.sort(key=lambda x: (-x.rate, x.id))  
-
-            non_keyword_matches = [attraction for attraction in attractions if not (keyword.lower() in attraction.name.lower() or (attraction.description and keyword.lower() in attraction.description.lower()))]
-            non_keyword_matches.sort(key=lambda x: (-x.rate, x.id))  
-
-            sorted_results = keyword_matches + non_keyword_matches
-            results = sorted_results[page * num_per_page : (page + 1) * num_per_page]
-                
-        else:
-            results = attraction_query.offset(page * num_per_page).limit(num_per_page).all()
-
-
-        next_page = page + 1 if (page + 1) * num_per_page < total_count else None
+        next_page = get_attraction_list_rank(page, keyword)[1]
 
         return {
             "nextPage": next_page,
             "data": [
                 {
-                    "id": attraction.id,
-                    "name": attraction.name,
-                    "category": attraction.category.name,
-                    "description": attraction.description,
-                    "address": attraction.address,
-                    "transport": attraction.transport,
-                    "mrt": attraction.mrt.name if attraction.mrt else None,
-                    "lat": float(attraction.lat),
-                    "lng": float(attraction.lng),
-                    "images": [img.url for img in attraction.images]
+                    "id": attraction["id"],
+                    "name": attraction["name"],
+                    "category": attraction["CATEGORY_NAME"],
+                    "description": attraction["description"],
+                    "address": attraction["address"],
+                    "transport": attraction["transport"],
+                    "mrt": attraction["MRT_NAME"] if attraction["MRT_NAME"] else None,
+                    "lat": float(attraction["lat"]),
+                    "lng": float(attraction["lng"]),
+                    "images": attraction["IMAGE_URLS"].split(',')
                 }
                 for attraction in results
             ]
