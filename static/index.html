@@ -1,11 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Index</title>
-</head>
-<body>
-  
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Index</title>
+    <link rel="stylesheet" href="/static/css/style.css" />
+  </head>
+  <body>
+    <header>
+      <div class="web_title">台北一日遊</div>
+      <nav>
+        <ul>
+          <li>預定行程</li>
+          <li>登入/註冊</li>
+        </ul>
+      </nav>
+    </header>
+    <header class="mobile">
+      <div class="web_title">台北一日遊</div>
+      <div class="icon">
+        <img
+          src="./img/4781852_burger_line_list_menu_nav_icon.png"
+          alt="menu"
+          onclick="toggleMenu()"
+        />
+        <nav class="mobile" id="menuList">
+          <ul>
+            <img
+              src="./img/9104213_close_cross_remove_delete_icon.png"
+              alt="close"
+              onclick="closeMenu()"
+            />
+            <li>預定行程</li>
+            <li>登入/註冊</li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <div class="welcome">
+        <div class="welcome_text">
+          <div class="slogan1">輕鬆享受台北一日悠閒</div>
+          <div class="slogan2">探索每個角落，體驗城市的深度旅遊行程</div>
+        </div>
+        <div class="search">
+          <input type="text" placeholder="輸入景點名稱查詢" />
+          <button>
+            <img src="/static/img/icon_search.png" alt="" />
+          </button>
+        </div>
+      </div>
+    </main>
+
+    <script src="app/task3.js"></script>
+  </body>
 </html>

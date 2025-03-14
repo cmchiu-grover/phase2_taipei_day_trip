@@ -77,6 +77,7 @@ target/
 
 # Jupyter Notebook
 .ipynb_checkpoints
+test.ipynb
 
 # IPython
 profile_default/
@@ -139,3 +140,8 @@ cython_debug/
 
 # macOS
 .DS_Store
+
+# local files
+*.scss
+results_list.csv
+test.py
