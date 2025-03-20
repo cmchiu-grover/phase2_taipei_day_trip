@@ -12,7 +12,6 @@ async function getMrts() {
     );
 
     keywordArea.appendChild(keywordDiv);
-    // console.log(mrtList[i]);
   }
 }
 
@@ -30,18 +29,23 @@ rightArrow.addEventListener("click", () => {
   keywordNav.scrollLeft += 500; // 向右滾動 100px
 });
 
-async function getAttractions(pageNumber = 0, keyword = "") {
+let currentPage = 0;
+let currentKeyword = "";
+let isLoading = false;
+
+async function getAttractions() {
+  // console.log(isLoading, currentPage);
+  if (isLoading || currentPage === null) return;
+  isLoading = true;
+
   const attrObject = await fetch(
-    `/api/attractions?page=${pageNumber}&keyword=${keyword}`
+    `/api/attractions?page=${currentPage}&keyword=${currentKeyword}`
   );
   const JSON = await attrObject.json();
   const attrList = JSON.data;
   const articleArea = document.querySelector("article");
   const boxArea = document.createElement("div");
   boxArea.className = "box_area";
-  if (!JSON.nextPage) {
-    window.removeEventListener("scroll", addMoreAttractionsHandler);
-  }
 
   for (let i = 0; i < attrList.length; i++) {
     let attractionName = attrList[i].name;
@@ -69,63 +73,59 @@ async function getAttractions(pageNumber = 0, keyword = "") {
     attrBox.appendChild(attractionText);
     boxArea.appendChild(attrBox);
   }
+
   articleArea.appendChild(boxArea);
-  return JSON.nextPage;
+
+  currentPage = JSON.nextPage;
+  isLoading = false;
+
+  if (!currentPage) {
+    // console.log(`監控關閉...`);
+    observer.unobserve(bottom);
+    // console.log("沒有更多資料...");
+  }
 }
+
+const bottom = document.querySelector("#bottom");
+
+const observer = new IntersectionObserver(async (entries) => {
+  if (entries[0].isIntersecting && !isLoading) {
+    // console.log(`發動監控，目前頁碼為：${currentPage}`);
+    loadAttractions();
+  }
+});
 
 async function loadAttractions() {
-  currentPage = await getAttractions();
-  if (currentPage == null) {
-    return;
-  }
-
-  while (window.innerHeight > document.body.offsetHeight) {
-    currentPage = await getAttractions(currentPage);
-    if (currentPage == null) {
-      break;
-    }
+  await getAttractions();
+  if (document.documentElement.scrollHeight <= window.innerHeight) {
+    // console.log("視窗太大，載入更多資料...");
+    await getAttractions();
   }
 }
 
-async function addMoreAttractions() {
-  const threshold = document.documentElement.scrollHeight * 0.9;
-  if (window.innerHeight + window.scrollY >= threshold) {
-    window.removeEventListener("scroll", addMoreAttractionsHandler);
-    const nextPage = await getAttractions(currentPage, currentKeyword);
-    if (nextPage !== null) {
-      currentPage = nextPage;
-      window.addEventListener("scroll", addMoreAttractionsHandler);
-    }
-  }
-}
+loadAttractions();
+observer.observe(bottom);
 
 async function searchAttraction(event) {
   event.preventDefault();
-
   const keywordInput = document.getElementById("keyword");
-
   if (keywordInput.value.trim() === "") {
     alert("請先輸入內容再送出...");
     return;
   }
-
   const articleArea = document.querySelector("article");
-
-  console.log(`先刪除內容`);
+  // console.log(`先刪除內容`);
 
   while (articleArea.firstChild) {
     articleArea.removeChild(articleArea.firstChild);
   }
 
-  console.log(`開始搜尋`);
+  // console.log(`開始搜尋`);
   currentKeyword = keywordInput.value.trim();
   currentPage = 0;
-  const nextPage = await getAttractions(currentPage, currentKeyword);
-
-  if (nextPage !== null) {
-    currentPage = nextPage;
-    window.addEventListener("scroll", addMoreAttractionsHandler);
-  }
+  // console.log(`第 ${currentPage} 頁資料`);
+  observer.observe(bottom);
+  loadAttractions();
 }
 
 async function quicklySearch(event, keyword) {
@@ -134,79 +134,49 @@ async function quicklySearch(event, keyword) {
   keywordInput.value = keyword;
   const articleArea = document.querySelector("article");
 
-  console.log(`先刪除內容`);
+  // console.log(`先刪除內容`);
 
   while (articleArea.firstChild) {
     articleArea.removeChild(articleArea.firstChild);
   }
 
-  console.log(`開始搜尋`);
-  const nextPage = await getAttractions(0, keyword.trim());
-
-  if (nextPage !== null) {
-    currentPage = nextPage;
-    window.addEventListener("scroll", addMoreAttractions(keyword.trim()));
-  }
+  // console.log(`開始搜尋`);
+  currentKeyword = keywordInput.value.trim();
+  currentPage = 0;
+  // console.log(`第 ${currentPage} 頁資料`);
+  observer.observe(bottom);
+  loadAttractions();
 }
 
-function throttle(func, delay) {
-  let timerId;
-  return function (...args) {
-    if (!timerId) {
-      timerId = setTimeout(() => {
-        func.apply(this, args);
-        timerId = undefined;
-      }, delay);
-    }
-  };
-}
+const signinArea = document.querySelector("dialog.signin_area");
+const signupArea = document.querySelector("dialog.signup_area");
+const closeSigninBtn = document.querySelector("img.close_signin");
+const closeSignupBtn = document.querySelector("img.close_signup");
+const showSignin = document.querySelector("p.p_signin");
+const showSignup = document.querySelector("p.p_signup");
 
-let currentPage = 0;
-let currentKeyword = "";
-
-const addMoreAttractionsHandler = throttle(() => addMoreAttractions(), 300);
-loadAttractions().then(() => {
-  window.addEventListener("scroll", addMoreAttractionsHandler);
+showSignin.addEventListener("click", () => {
+  signinArea.showModal();
 });
 
-function displaySignin() {
-  const signinArea = document.querySelector("div.signin_area");
-  const coverPaper = document.querySelector("div.cover");
-  signinArea.style.display = "flex";
-  coverPaper.style.display = "flex";
+showSignup.addEventListener("click", () => {
+  signupArea.showModal();
+});
+
+function closeSignin() {
+  signinArea.close();
 }
 
-function displaySignup() {
-  const signupArea = document.querySelector("div.signup_area");
-  const coverPaper = document.querySelector("div.cover");
-  signupArea.style.display = "flex";
-  coverPaper.style.display = "flex";
+function closeSignup() {
+  signupArea.close();
 }
 
-function hideSignin() {
-  const signinArea = document.querySelector("div.signin_area");
-  const coverPaper = document.querySelector("div.cover");
-  signinArea.style.display = "none";
-  coverPaper.style.display = "none";
+function closeSigninShowSignup() {
+  signinArea.close();
+  signupArea.showModal();
 }
 
-function hideSignup() {
-  const signupArea = document.querySelector("div.signup_area");
-  const coverPaper = document.querySelector("div.cover");
-  signupArea.style.display = "none";
-  coverPaper.style.display = "none";
-}
-
-function hideSigninDisplaySignup() {
-  const signinArea = document.querySelector("div.signin_area");
-  const signupArea = document.querySelector("div.signup_area");
-  signinArea.style.display = "none";
-  signupArea.style.display = "flex";
-}
-
-function hideSignupDisplaySignin() {
-  const signinArea = document.querySelector("div.signin_area");
-  const signupArea = document.querySelector("div.signup_area");
-  signinArea.style.display = "flex";
-  signupArea.style.display = "none";
+function closeSignupShowSignin() {
+  signupArea.close();
+  signinArea.showModal();
 }
