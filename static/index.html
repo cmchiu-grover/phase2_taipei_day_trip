@@ -1,13 +1,59 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-Hant">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Index</title>
+    <title>首頁</title>
     <link rel="stylesheet" href="/static/css/style.css" />
   </head>
   <body>
-    <div class="signup_area">
+    <dialog class="signin_area">
+      <div class="decobar"></div>
+      <h2>登入會員帳號</h2>
+      <form method="post" action="/signin">
+        <div>
+          <label for="email"></label>
+          <input
+            class="signin_eamil"
+            type="text"
+            id="username"
+            name="email"
+            placeholder="輸入電子郵件"
+            required
+          />
+        </div>
+        <div>
+          <label for="password"></label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            placeholder="輸入密碼"
+            required
+          />
+        </div>
+
+        <button type="submit" style="cursor: pointer">登入帳戶</button>
+        <div class="link_text">
+          <p>還沒有帳戶？</p>
+          <p
+            class="hide_signin_display_signup"
+            style="cursor: pointer"
+            onclick="closeSigninShowSignup()"
+          >
+            點此註冊
+          </p>
+        </div>
+      </form>
+      <button
+        class="close_signin"
+        style="cursor: pointer"
+        onclick="closeSignin()"
+        autofocus
+      ></button>
+    </dialog>
+
+    <dialog class="signup_area">
       <div class="decobar"></div>
       <h2>註冊會員帳號</h2>
       <form method="post" action="/signup" autocomplete="off">
@@ -50,70 +96,20 @@
           <p>已經有帳戶了？</p>
           <p
             class="hide_signup_display_signin"
-            onclick="hideSignupDisplaySignin()"
+            onclick="closeSignupShowSignin()"
             style="cursor: pointer"
           >
             點此登入
           </p>
         </div>
       </form>
-      <img
-        src="/static/img/close_icon.png"
-        alt=""
-        class="close_icon"
-        onclick="hideSignup(event)"
+      <button
+        class="close_signup"
+        onclick="closeSignup()"
         style="cursor: pointer"
-      />
-    </div>
-
-    <div class="signin_area">
-      <div class="decobar"></div>
-      <h2>登入會員帳號</h2>
-      <form method="post" action="/signin">
-        <div>
-          <label for="email"></label>
-          <input
-            class="signin_eamil"
-            type="text"
-            id="username"
-            name="email"
-            placeholder="輸入電子郵件"
-            required
-          />
-        </div>
-        <div>
-          <label for="password"></label>
-          <input
-            type="password"
-            id="password"
-            name="password"
-            placeholder="輸入密碼"
-            required
-          />
-        </div>
-
-        <button type="submit" style="cursor: pointer">登入帳戶</button>
-        <div class="link_text">
-          <p>還沒有帳戶？</p>
-          <p
-            class="hide_signin_display_signup"
-            onclick="hideSigninDisplaySignup()"
-            style="cursor: pointer"
-          >
-            點此註冊
-          </p>
-        </div>
-      </form>
-      <img
-        src="/static/img/close_icon.png"
-        alt=""
-        class="close_icon"
-        onclick="hideSignin(event)"
-        style="cursor: pointer"
-      />
-    </div>
-
-    <div class="cover"></div>
+        autofocus
+      ></button>
+    </dialog>
 
     <main>
       <header>
@@ -123,21 +119,9 @@
             <ul>
               <li>預定行程</li>
               <li style="display: flex">
-                <p
-                  class="p_signin"
-                  onclick="displaySignin(event)"
-                  style="cursor: pointer"
-                >
-                  登入
-                </p>
+                <p class="p_signin" style="cursor: pointer">登入</p>
                 /
-                <p
-                  class="psignup"
-                  onclick="displaySignup(event)"
-                  style="cursor: pointer"
-                >
-                  註冊
-                </p>
+                <p class="p_signup" style="cursor: pointer">註冊</p>
               </li>
             </ul>
           </nav>
@@ -200,6 +184,8 @@
           </div>
         </div> -->
       </article>
+
+      <div id="bottom"></div>
 
       <footer>
         <div>COPYRIGHT © 2021 台北一日遊</div>
