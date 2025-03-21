@@ -72,6 +72,7 @@ body dialog.signin_area form input {
   height: 47px;
   width: 310px;
   border-radius: 5px 5px 5px 5px;
+  border: solid 1px #cccccc;
   padding: 16.5px 15px 16.5px 15px;
 }
 body dialog.signup_area form input::-moz-placeholder, body dialog.signin_area form input::-moz-placeholder {
@@ -151,6 +152,7 @@ body main header {
   max-width: 1200px;
   width: 100%;
   padding: 0 10px 0 10px;
+  margin: 10px 0 10px 0;
 }
 body main header div.header_area {
   width: 100%;
@@ -171,15 +173,15 @@ body main header div.header_area a.web_title {
 body main header div.header_area a.web_title:visited {
   color: #448899;
 }
-body main header div.header_area nav {
+body main header div.header_area nav.header_nav {
   width: auto;
   align-items: center;
 }
-body main header div.header_area nav ul {
+body main header div.header_area nav.header_nav ul {
   display: flex;
   flex-direction: row;
 }
-body main header div.header_area nav ul li {
+body main header div.header_area nav.header_nav ul li {
   text-align: left;
   padding: 10px;
   font-size: 16px;
@@ -229,6 +231,7 @@ body main div.welcome div.welcome_content div.search input {
   height: 46px;
   padding: 15px;
   border-radius: 5px 0 0 5px;
+  border: none;
 }
 body main div.welcome div.welcome_content div.search input::-moz-placeholder {
   color: #757575;
@@ -259,15 +262,16 @@ body main div.welcome div.welcome_content div.search div.search_button {
 body main div.welcome div.welcome_content div.search div.search_button:focus {
   outline: none;
 }
-body main nav {
+body main nav.mrts {
   width: 100%;
   max-width: 1200px;
   height: 70px;
   padding-bottom: 20;
   display: flex;
   flex-direction: row;
+  margin-top: 40px;
 }
-body main nav div.left_arrow {
+body main nav.mrts div.left_arrow {
   width: 47px;
   height: 50px;
   padding: 9px 0 9px 15px;
@@ -275,11 +279,11 @@ body main nav div.left_arrow {
   justify-content: center;
   align-items: center;
 }
-body main nav div.left_arrow img.left_arrow {
+body main nav.mrts div.left_arrow img.left_arrow {
   width: 32px;
   height: 32px;
 }
-body main nav div.keyword_area {
+body main nav.mrts div.keyword_area {
   width: 1106px;
   height: 50px;
   padding: 13px 10px 13px 10px;
@@ -288,24 +292,24 @@ body main nav div.keyword_area {
   align-items: center;
   overflow: hidden;
 }
-body main nav div.keyword_area div.keyword_nav {
+body main nav.mrts div.keyword_area div.keyword_nav {
   display: flex;
   overflow-x: auto;
   scroll-behavior: smooth;
   white-space: nowrap;
   scrollbar-width: none;
 }
-body main nav div.keyword_area div.keyword_nav::-webkit-scrollbar {
+body main nav.mrts div.keyword_area div.keyword_nav::-webkit-scrollbar {
   display: none;
 }
-body main nav div.keyword_area div.keyword_nav div {
-  padding: 10px 20px;
+body main nav.mrts div.keyword_area div.keyword_nav div {
+  padding: 5px 15px 5px 15px;
   text-decoration: none;
   color: #666666;
   font-weight: 500;
   cursor: pointer;
 }
-body main nav div.right_arrow {
+body main nav.mrts div.right_arrow {
   width: 47px;
   height: 50px;
   padding: 9px 15px 9px 0;
@@ -313,7 +317,7 @@ body main nav div.right_arrow {
   justify-content: center;
   align-items: center;
 }
-body main nav div.right_arrow img {
+body main nav.mrts div.right_arrow img {
   width: 32px;
   height: 32px;
 }
@@ -334,20 +338,22 @@ body main article div.box_area div.box {
   height: 242px;
   width: 270px;
   display: flex;
-  background-color: lightblue;
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
   margin: 15px;
+  border-radius: 5px 5px 5px 5px;
+  border: 1px solid #e8e8e8;
+  background-color: #ffffff;
 }
 body main article div.box_area div.box figure {
   height: 197px;
   width: 270px;
-  background-color: #666666;
   background-size: cover;
   display: flex;
   justify-content: flex-start;
   align-items: flex-end;
+  border-radius: 5px 5px 0 0;
 }
 body main article div.box_area div.box figure p {
   width: 270px;
@@ -364,7 +370,7 @@ body main article div.box_area div.box figure p {
 body main article div.box_area div.box div.attraction_text {
   height: 45px;
   width: 270px;
-  background-color: #f8f8f8;
+  background-color: #ffffff;
   flex-shrink: 0;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -374,6 +380,7 @@ body main article div.box_area div.box div.attraction_text {
   justify-content: space-between;
   align-items: center;
   padding: 10px;
+  border-radius: 0 0 5px 5px;
 }
 body main article div.box_area div.box div.attraction_text div.mrt_station {
   font-size: 16px;
