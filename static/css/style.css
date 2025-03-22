@@ -1,9 +1,10 @@
 @charset "UTF-8";
+@import url(//fonts.googleapis.com/earlyaccess/notosanstc.css);
 * {
   margin: 0px;
   padding: 0px;
   box-sizing: border-box;
-  font-family: "Microsoft JhengHei", Arial, sans-serif;
+  font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
 }
 
 ol,
@@ -11,86 +12,180 @@ ul {
   list-style: none;
 }
 
+::backdrop {
+  background-color: #666666;
+  opacity: 0.5;
+}
+
 body {
   height: auto;
 }
-body header {
+body dialog.signup_area {
+  width: 340px;
+  height: 332px;
   display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 20px;
+  transform: translateX(-50%);
 }
-body header div.web_title {
-  padding: 10px;
-  font-weight: bolder;
-}
-body header nav ul {
+body dialog.signin_area {
+  width: 340px;
+  height: 275px;
   display: flex;
-  flex-direction: row;
+  transform: translateX(-50%);
 }
-body header nav ul li {
-  text-align: left;
-  padding: 10px;
-}
-body header.mobile {
-  display: none;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 20px;
-}
-body header.mobile div.web_title {
-  padding: 10px;
-  font-weight: bolder;
-}
-body header.mobile div.icon {
-  position: relative;
-  width: 44px;
-  height: 44px;
-  padding-right: 10px;
-  display: flex;
-  align-items: center;
-}
-body header.mobile div.icon img {
-  width: 34px;
-  height: 34px;
-  color: white;
-}
-body header.mobile div.icon nav.mobile {
-  position: absolute;
-  width: 250px;
-  height: 100vh;
-  top: 0;
-  right: 0;
-  background-color: #fff;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-}
-body header.mobile div.icon nav.mobile ul {
-  position: relative;
-  display: flex;
+body dialog.signup_area,
+body dialog.signin_area {
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+  border-radius: 5px 5px 5px 5px;
+  border: 0;
+  left: 50%;
+  top: 80px;
+  overflow: visible;
+  z-index: -1;
   flex-direction: column;
-  align-items: center;
   justify-content: flex-start;
+  align-items: center;
+  background-color: #ffffff;
 }
-body header.mobile div.icon nav.mobile ul img {
-  margin: 5px;
+body dialog.signup_area div.decobar,
+body dialog.signin_area div.decobar {
+  border-radius: 5px 5px 0 0;
+  flex-shrink: 0;
+  background-color: #448899;
+  width: 100%;
+  height: 10px;
+}
+body dialog.signup_area h2,
+body dialog.signin_area h2 {
+  margin-top: 10px;
+  font-size: 24px;
+  font-weight: 700;
+  color: #666666;
+}
+body dialog.signup_area form,
+body dialog.signin_area form {
+  margin: 15px 15px 16px 15px;
+}
+body dialog.signup_area form input,
+body dialog.signin_area form input {
+  margin: 5px 0 5px 0;
+  height: 47px;
+  width: 310px;
+  border-radius: 5px 5px 5px 5px;
+  border: solid 1px #cccccc;
+  padding: 16.5px 15px 16.5px 15px;
+}
+body dialog.signup_area form input::-moz-placeholder, body dialog.signin_area form input::-moz-placeholder {
+  color: #757575;
+  font-weight: 500;
+  font-size: 16px;
+}
+body dialog.signup_area form input::placeholder,
+body dialog.signin_area form input::placeholder {
+  color: #757575;
+  font-weight: 500;
+  font-size: 16px;
+}
+body dialog.signup_area form button,
+body dialog.signin_area form button {
+  width: 310px;
+  height: 46px;
+  background-color: #448899;
+  font-size: 19px;
+  font-weight: 400;
+  color: #ffffff;
+  border: 0;
+  border-radius: 5px 5px 5px 5px;
+  margin: 5px 0 5px 0;
+}
+body dialog.signup_area form div.link_text,
+body dialog.signin_area form div.link_text {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 5px;
+}
+body dialog.signup_area form div.link_text p,
+body dialog.signin_area form div.link_text p {
+  color: #666666;
+  font-weight: 500;
+}
+body dialog.signup_area button.close_signin,
+body dialog.signup_area button.close_signup,
+body dialog.signin_area button.close_signin,
+body dialog.signin_area button.close_signup {
+  position: absolute; /* 設置絕對定位 */
+  top: 27px; /* 距離 form 頂部 27px */
+  right: 17px; /* 距離 form 右邊 17px */
+  z-index: 4; /* 設置 z-index 為 4，使其位於 form 上一層 */
+  background-image: url("/static/img/close_icon.png"); /* 替換為你的圖片路徑 */
+  background-size: cover; /* 或 contain，根據需求 */
+  border: none;
+  background-color: #ffffff;
+  padding: 0;
+  width: 16px; /* 設定圖片寬度 */
+  height: 16px; /* 設定圖片高度 */
+}
+body dialog.signup_area[open],
+body dialog.signin_area[open] {
+  opacity: 1;
+  z-index: 2;
+}
+body div.cover {
+  display: none;
   position: absolute;
-  width: 36px;
-  height: 36px;
-  right: 0;
-}
-body header.mobile div.icon nav.mobile ul li {
-  text-align: left;
-  padding: 10px;
-  margin: 10px;
+  background-color: #666666;
+  opacity: 0.5; /* 設置透明度為 30% */
+  z-index: 2; /* 設置 z-index 為 2 */
+  width: 100%;
+  height: 100%;
 }
 body main {
   height: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 10vh;
+  z-index: 1;
+}
+body main header {
+  display: flex;
+  max-width: 1200px;
+  width: 100%;
+  padding: 0 10px 0 10px;
+  margin: 10px 0 10px 0;
+}
+body main header div.header_area {
+  width: 100%;
+  max-width: 1200px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 30px;
+}
+body main header div.header_area a.web_title {
+  color: #448899;
+  text-decoration: none;
+  width: 150px;
+  font-weight: bolder;
+  flex-shrink: 0;
+}
+body main header div.header_area a.web_title:visited {
+  color: #448899;
+}
+body main header div.header_area nav.header_nav {
+  width: auto;
+  align-items: center;
+}
+body main header div.header_area nav.header_nav ul {
+  display: flex;
+  flex-direction: row;
+}
+body main header div.header_area nav.header_nav ul li {
+  text-align: left;
+  padding: 10px;
+  font-size: 16px;
+  color: #666666;
 }
 body main div.welcome {
   background-image: url("../img/welcome.png");
@@ -101,266 +196,262 @@ body main div.welcome {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin-bottom: 20px;
 }
-body main div.welcome div.welcome_text {
+body main div.welcome div.welcome_content {
+  width: 100%;
   max-width: 1200px;
-  margin: 10px;
+  height: 169px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
 }
-body main div.welcome div.welcome_text div.slogan1 {
+body main div.welcome div.welcome_content div.welcome_text {
+  max-width: 1200px;
+  margin-bottom: 25px;
+}
+body main div.welcome div.welcome_content div.welcome_text div.slogan1 {
   font-size: 28px;
+  color: #f8f8f8;
+  font-weight: 700;
+  margin-bottom: 15px;
 }
-body main div.welcome div.welcome_text div.slogan2 {
-  font-size: 14px;
+body main div.welcome div.welcome_content div.welcome_text div.slogan2 {
+  font-size: 16px;
+  color: #f8f8f8;
+  font-weight: 700;
 }
-body main div.welcome div.search {
+body main div.welcome div.welcome_content div.search {
   display: flex;
   justify-content: center;
 }
-body main div.welcome div.search button {
-  width: 30px;
-  height: 30px;
+body main div.welcome div.welcome_content div.search input {
+  width: 400px;
+  height: 46px;
+  padding: 15px;
+  border-radius: 5px 0 0 5px;
+  border: none;
+}
+body main div.welcome div.welcome_content div.search input::-moz-placeholder {
+  color: #757575;
+  font-weight: 700;
+}
+body main div.welcome div.welcome_content div.search input::placeholder {
+  color: #757575;
+  font-weight: 700;
+}
+body main div.welcome div.welcome_content div.search div.search_button {
+  width: 60px;
+  height: 46px;
+  background-color: #448899;
+  background-image: url("../img/icon_search.png");
+  background-size: 30px 30px;
+  background-repeat: no-repeat;
+  background-position: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 0 5px 5px 0;
+  padding: 8px 15px 8px 15px;
+  border: 0;
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+}
+body main div.welcome div.welcome_content div.search div.search_button:focus {
+  outline: none;
+}
+body main nav.mrts {
+  width: 100%;
+  max-width: 1200px;
+  height: 70px;
+  padding-bottom: 20;
+  display: flex;
+  flex-direction: row;
+  margin-top: 40px;
+}
+body main nav.mrts div.left_arrow {
+  width: 47px;
+  height: 50px;
+  padding: 9px 0 9px 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+body main nav.mrts div.left_arrow img.left_arrow {
+  width: 32px;
+  height: 32px;
+}
+body main nav.mrts div.keyword_area {
+  width: 1106px;
+  height: 50px;
+  padding: 13px 10px 13px 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+body main nav.mrts div.keyword_area div.keyword_nav {
+  display: flex;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  white-space: nowrap;
+  scrollbar-width: none;
+}
+body main nav.mrts div.keyword_area div.keyword_nav::-webkit-scrollbar {
+  display: none;
+}
+body main nav.mrts div.keyword_area div.keyword_nav div {
+  padding: 5px 15px 5px 15px;
+  text-decoration: none;
+  color: #666666;
+  font-weight: 500;
+  cursor: pointer;
+}
+body main nav.mrts div.right_arrow {
+  width: 47px;
+  height: 50px;
+  padding: 9px 15px 9px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+body main nav.mrts div.right_arrow img {
+  width: 32px;
+  height: 32px;
 }
 body main article {
   width: 1200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
-body main article div.smallbox_area {
-  height: 50px;
+body main article div.box_area {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+}
+body main article div.box_area div.box {
+  height: 242px;
+  width: 270px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  margin: 15px;
+  border-radius: 5px 5px 5px 5px;
+  border: 1px solid #e8e8e8;
+  background-color: #ffffff;
+}
+body main article div.box_area div.box figure {
+  height: 197px;
+  width: 270px;
+  background-size: cover;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-end;
+  border-radius: 5px 5px 0 0;
+}
+body main article div.box_area div.box figure p {
+  width: 270px;
+  height: 40px;
+  padding: 10px;
+  font-size: 16px;
+  color: #ffffff;
+  font-weight: 700;
+  background-color: rgba(0, 0, 0, 0.3764705882);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+body main article div.box_area div.box div.attraction_text {
+  height: 45px;
+  width: 270px;
+  background-color: #ffffff;
+  flex-shrink: 0;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  margin-bottom: 10px;
-}
-body main article div.smallbox_area div.smallbox {
-  height: 100%;
-  width: 100%;
-  display: flex;
-  background-color: lightblue;
-  justify-content: flex-start;
   align-items: center;
-  margin-left: 10px;
-  margin-right: 10px;
-}
-body main article div.smallbox_area div.smallbox figure {
-  height: 100%;
-  height: 100%;
-  width: 80px;
-  background-size: cover;
-}
-body main article div.smallbox_area div.smallbox div.text {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-left: 10px;
-  font-size: 20px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
-}
-body main article div.bigbox_area {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-start;
-  align-items: flex-start;
-  width: 1200px;
-  height: 420px;
-  margin-bottom: 20px;
-}
-body main article div.bigbox_area div.bigbox1 {
-  width: 380px; /* bigbox1 的寬度是 1200px 的 2/5 */
-  box-sizing: border-box;
-  height: 200px;
-  margin: 10px;
-}
-body main article div.bigbox_area div.bigbox1 figure {
-  background-size: cover;
-  background-position: center;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-}
-body main article div.bigbox_area div.bigbox1 figure div.star {
-  height: 80%;
-  width: 100%;
-  display: flex;
-  justify-content: flex-end;
-  align-items: flex-start;
-}
-body main article div.bigbox_area div.bigbox1 figure div.star span {
   padding: 10px;
-  font-size: 20px;
-  color: rgba(255, 179, 0, 0.8);
+  border-radius: 0 0 5px 5px;
 }
-body main article div.bigbox_area div.bigbox1 figure div.text {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: rgba(0, 255, 175, 0.6);
-  height: 20%;
+body main article div.box_area div.box div.attraction_text div.mrt_station {
+  font-size: 16px;
+  color: #757575;
+  font-weight: 500;
+}
+body main article div.box_area div.box div.attraction_text div.category {
+  font-size: 16px;
+  color: #757575;
+  font-weight: 500;
+}
+body main footer {
   width: 100%;
-  font-size: 20px;
+  height: 104px;
+  background-color: #757575;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+body main footer div {
   text-align: center;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
-  padding: 10px;
-}
-body main article div.bigbox_area div.bigbox1 figure div.text p {
-  text-align: center; /* 文字居中 */
-  white-space: nowrap; /* 防止換行 */
-  overflow: hidden; /* 隱藏超過部分 */
-  text-overflow: ellipsis; /* 顯示省略號 */
-  box-sizing: border-box; /* 確保計算寬度時包括 padding 和 border */
-}
-body main article div.bigbox_area div.bigbox {
-  width: 180px; /* bigbox 的寬度是 1200px 的 1/5 */
-  box-sizing: border-box;
-  height: 200px;
-  margin: 10px;
-}
-body main article div.bigbox_area div.bigbox figure {
-  background-size: cover;
-  background-position: center;
-  width: 100%;
-  height: 100%;
-}
-body main article div.bigbox_area div.bigbox figure div.star {
-  height: 80%;
-  width: 100%;
-  display: flex;
-  justify-content: flex-end;
-  align-items: flex-start;
-}
-body main article div.bigbox_area div.bigbox figure div.star span {
-  padding: 10px;
-  font-size: 20px;
-  color: rgba(255, 179, 0, 0.8);
-}
-body main article div.bigbox_area div.bigbox figure div.text {
-  background-color: rgba(0, 255, 175, 0.6);
-  height: 20%;
-  width: 100%;
-  min-width: 0;
-  font-size: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 10px;
-  text-align: center; /* 文字居中 */
-  white-space: nowrap; /* 防止換行 */
-  overflow: hidden; /* 隱藏超過部分 */
-  text-overflow: ellipsis; /* 顯示省略號 */
-  box-sizing: border-box; /* 確保計算寬度時包括 padding 和 border */
-}
-body main article div.bigbox_area div.bigbox figure div.text p {
-  text-align: center; /* 文字居中 */
-  white-space: nowrap; /* 防止換行 */
-  overflow: hidden; /* 隱藏超過部分 */
-  text-overflow: ellipsis; /* 顯示省略號 */
-  box-sizing: border-box; /* 確保計算寬度時包括 padding 和 border */
-}
-body main button.more {
-  margin: 10px;
-  padding: 10px;
-  width: 120px; /* 設定按鈕的寬度為 100px */
-  height: 50px; /* 設定按鈕的高度為 80px */
-  font-size: 20px; /* 設定文字大小 */
-  text-align: center; /* 使文字水平置中 */
-  border: none; /* 移除邊框 */
-  cursor: pointer; /* 設定鼠標懸停時顯示手形光標 */
-  border-radius: 8px; /* 設定圓角 */
-  transition: background-color 0.3s ease; /* 設定背景顏色過渡效果 */
-}
-body main button.more:hover {
-  background-color: rgba(0, 255, 175, 0.6); /* 鼠標懸停時的背景顏色 */
+  font-size: 14px;
+  font-weight: 700;
+  color: #ffffff;
 }
 
 @media screen and (max-width: 1200px) {
-  body main div.welcome {
-    margin-bottom: 0;
-  }
   body main article {
     width: 90vw;
-    /* 第四行特例: 調整最後一行為兩個元素 */
   }
-  body main article div.smallbox_area {
-    margin-top: 10px;
-    margin-bottom: 10px;
-    height: 140px;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-  }
-  body main article div.smallbox_area div.smallbox {
-    flex: 1 1 45%;
-    height: 50px;
-    background-color: lightblue;
-    justify-content: flex-start;
-    align-items: center;
-  }
-  body main article div.bigbox_area {
-    width: 90vw;
-    gap: 20px;
-    height: auto;
-    margin-bottom: 0px;
-    flex-wrap: wrap; /* 讓元素換行 */
-    margin: 0 auto; /* 使大區塊水平居中 */
+  body main article div.box_area {
     justify-content: center;
-    margin-bottom: 20px;
   }
-  body main article div.bigbox_area div.bigbox,
-  body main article div.bigbox_area div.bigbox1 {
-    flex: none;
-    margin: 0;
-    width: calc(25% - 20px); /* 讓每個 box 宽度為四分之一，並考慮間距 */
+  body main article div.box_area div.box {
+    max-width: 510px;
+    width: calc(50% - 30px);
   }
-  body main article div.bigbox_area div.bigbox .text,
-  body main article div.bigbox_area div.bigbox1 .text {
-    padding: 10px;
-    text-align: left;
-    justify-content: flex-start;
-    overflow: hidden; /* 隱藏超過部分 */
-    text-overflow: ellipsis; /* 顯示省略號 */
-    white-space: nowrap; /* 防止文字換行 */
+  body main article div.box_area div.box figure,
+  body main article div.box_area div.box div.attraction_text {
+    width: 100%;
   }
-  body main article .bigbox_area > .bigbox:nth-child(n+9) {
-    width: calc(50% - 20px); /* 讓第9個元素開始佔據50%的寬度 */
-  }
-  body main article #lastOne {
-    height: auto !important;
-  }
-  body main article #lastOne > .bigbox:nth-child(n+5) {
-    width: calc(100% - 20px);
-  }
-  body header.mobile div.icon nav.mobile {
-    display: none;
+  body main article div.box_area div.box figure p {
+    width: 100%;
   }
 }
 @media screen and (max-width: 600px) {
-  body header {
-    display: none;
+  body main div.welcome div.welcome_content div.search {
+    max-width: 460px;
+    width: 100%;
   }
-  body header.mobile {
-    display: flex;
+  body main div.welcome div.welcome_content div.search input {
+    max-width: 400px;
+    width: 100%;
   }
-  body main article div.smallbox_area {
-    height: 210px;
+  body main article div.box_area {
+    justify-content: center;
   }
-  body main article div.smallbox_area div.smallbox {
-    flex: 1 1 100%;
-    margin: 0;
+  body main article div.box_area div.box {
+    max-width: 540px;
+    width: 100%;
+    height: 280px;
   }
-  body main article div.bigbox_area div.bigbox1 {
-    flex: 1 1 100%;
+  body main article div.box_area div.box figure {
+    height: 235px;
   }
-  body main article div.bigbox_area div.bigbox1 figure div.text div {
-    max-width: 284px;
+  body main article div.box_area div.box div.attraction_text {
+    height: 45px;
   }
-  body main article div.bigbox_area div.bigbox {
-    flex: 1 1 100%;
-  }
-  body main article div.bigbox_area div.bigbox figure div.text div {
-    max-width: 284px;
+}
+@media screen and (max-width: 360px) {
+  body main article {
+    width: 100%;
   }
 }/*# sourceMappingURL=style.css.map */

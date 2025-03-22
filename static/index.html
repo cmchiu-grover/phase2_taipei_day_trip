@@ -1,58 +1,197 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-Hant">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Index</title>
+    <title>首頁</title>
     <link rel="stylesheet" href="/static/css/style.css" />
   </head>
   <body>
-    <header>
-      <div class="web_title">台北一日遊</div>
-      <nav>
-        <ul>
-          <li>預定行程</li>
-          <li>登入/註冊</li>
-        </ul>
-      </nav>
-    </header>
-    <header class="mobile">
-      <div class="web_title">台北一日遊</div>
-      <div class="icon">
-        <img
-          src="./img/4781852_burger_line_list_menu_nav_icon.png"
-          alt="menu"
-          onclick="toggleMenu()"
-        />
-        <nav class="mobile" id="menuList">
-          <ul>
-            <img
-              src="./img/9104213_close_cross_remove_delete_icon.png"
-              alt="close"
-              onclick="closeMenu()"
-            />
-            <li>預定行程</li>
-            <li>登入/註冊</li>
-          </ul>
-        </nav>
-      </div>
-    </header>
+    <dialog class="signin_area">
+      <div class="decobar"></div>
+      <h2>登入會員帳號</h2>
+      <form method="post" action="/signin">
+        <div>
+          <label for="email"></label>
+          <input
+            class="signin_eamil"
+            type="text"
+            id="username"
+            name="email"
+            placeholder="輸入電子郵件"
+            required
+          />
+        </div>
+        <div>
+          <label for="password"></label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            placeholder="輸入密碼"
+            required
+          />
+        </div>
+
+        <button type="submit" style="cursor: pointer">登入帳戶</button>
+        <div class="link_text">
+          <p>還沒有帳戶？</p>
+          <p
+            class="hide_signin_display_signup"
+            style="cursor: pointer"
+            onclick="closeSigninShowSignup()"
+          >
+            點此註冊
+          </p>
+        </div>
+      </form>
+      <button
+        class="close_signin"
+        style="cursor: pointer"
+        onclick="closeSignin()"
+        autofocus
+      ></button>
+    </dialog>
+
+    <dialog class="signup_area">
+      <div class="decobar"></div>
+      <h2>註冊會員帳號</h2>
+      <form method="post" action="/signup" autocomplete="off">
+        <div>
+          <label for="name"></label>
+          <input
+            class="signup_name"
+            type="text"
+            name="name"
+            placeholder="輸入姓名"
+            required
+          />
+        </div>
+        <div>
+          <label for="email"></label>
+          <input
+            class="signup_email"
+            type="text"
+            name="email"
+            placeholder="輸入電子郵件"
+            required
+          />
+        </div>
+        <div>
+          <label for="password"></label>
+          <input
+            class="signup_password"
+            type="password"
+            name="password"
+            pattern="[a-zA-Z0-9]{8,}"
+            autocomplete="new-password"
+            placeholder="輸入密碼"
+            required
+          />
+        </div>
+        <div class="regis_submit">
+          <button type="submit" style="cursor: pointer">註冊新帳戶</button>
+        </div>
+        <div class="link_text">
+          <p>已經有帳戶了？</p>
+          <p
+            class="hide_signup_display_signin"
+            onclick="closeSignupShowSignin()"
+            style="cursor: pointer"
+          >
+            點此登入
+          </p>
+        </div>
+      </form>
+      <button
+        class="close_signup"
+        onclick="closeSignup()"
+        style="cursor: pointer"
+        autofocus
+      ></button>
+    </dialog>
 
     <main>
-      <div class="welcome">
-        <div class="welcome_text">
-          <div class="slogan1">輕鬆享受台北一日悠閒</div>
-          <div class="slogan2">探索每個角落，體驗城市的深度旅遊行程</div>
+      <header>
+        <div class="header_area">
+          <a class="web_title" href="/">台北一日遊</a>
+          <nav class="header_nav">
+            <ul>
+              <li>預定行程</li>
+              <li style="display: flex">
+                <p class="p_signin" style="cursor: pointer">登入</p>
+                /
+                <p class="p_signup" style="cursor: pointer">註冊</p>
+              </li>
+            </ul>
+          </nav>
         </div>
-        <div class="search">
-          <input type="text" placeholder="輸入景點名稱查詢" />
-          <button>
-            <img src="/static/img/icon_search.png" alt="" />
-          </button>
+      </header>
+
+      <div class="welcome">
+        <div class="welcome_content">
+          <div class="welcome_text">
+            <div class="slogan1">輕鬆享受台北一日悠閒</div>
+            <div class="slogan2">探索每個角落，體驗城市的深度旅遊行程</div>
+          </div>
+          <div class="search">
+            <input
+              id="keyword"
+              type="text"
+              placeholder="輸入景點名稱查詢"
+              method="GET"
+            />
+            <div
+              id="search_button"
+              class="search_button"
+              onclick="searchAttraction(event)"
+              style="cursor: pointer"
+            ></div>
+          </div>
         </div>
       </div>
+
+      <nav class="mrts">
+        <div class="left_arrow">
+          <img
+            class="left_arrow"
+            src="/static/img/left_arrow.png"
+            style="cursor: pointer"
+            alt=""
+          />
+        </div>
+        <div class="keyword_area">
+          <div class="keyword_nav"></div>
+        </div>
+        <div class="right_arrow">
+          <img
+            class="right_arrow"
+            src="/static/img/right_arrow.png"
+            style="cursor: pointer"
+            alt=""
+          />
+        </div>
+      </nav>
+
+      <article>
+        <!-- <div class="box_area">
+          <div class="box">
+            <figure><p>平安鐘</p></figure>
+            <div class="attraction_text">
+              <div class="mrt_station">忠孝復興</div>
+              <div class="category">公共藝術</div>
+            </div>
+          </div>
+        </div> -->
+      </article>
+
+      <div id="bottom"></div>
+
+      <footer>
+        <div>COPYRIGHT © 2021 台北一日遊</div>
+      </footer>
     </main>
 
-    <script src="app/task3.js"></script>
+    <script src="/static/js/app.js"></script>
   </body>
 </html>

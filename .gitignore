@@ -145,3 +145,6 @@ cython_debug/
 *.scss
 results_list.csv
 test.py
+test.js
+signpage.html
+static/css/*.map
