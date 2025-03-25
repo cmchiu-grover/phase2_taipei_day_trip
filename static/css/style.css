@@ -147,12 +147,14 @@ body main {
   align-items: center;
   z-index: 1;
 }
+body main header.header_underline {
+  border-bottom: solid 1px #e8e8e8;
+}
 body main header {
   display: flex;
-  max-width: 1200px;
+  justify-content: center;
+  align-items: center;
   width: 100%;
-  padding: 0 10px 0 10px;
-  margin: 10px 0 10px 0;
 }
 body main header div.header_area {
   width: 100%;
@@ -162,6 +164,7 @@ body main header div.header_area {
   justify-content: space-between;
   align-items: center;
   font-size: 30px;
+  padding: 10px 10px 10px 10px;
 }
 body main header div.header_area a.web_title {
   color: #448899;
@@ -321,6 +324,194 @@ body main nav.mrts div.right_arrow img {
   width: 32px;
   height: 32px;
 }
+body main section.main_container {
+  width: 1200px;
+  height: 400px;
+  padding: 0 15px 0 15px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin: 40px 0 40px 0;
+}
+body main section.main_container .slideshow-container {
+  border-radius: 5px;
+  width: 540px;
+  height: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+body main section.main_container .slideshow-container .mySlides {
+  width: 100%;
+  height: 100%;
+  display: none;
+  border-radius: 5px;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+}
+body main section.main_container .slideshow-container .arrow_area {
+  width: 100%;
+  position: absolute;
+  top: 50%;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 10px 0 10px;
+}
+body main section.main_container .slideshow-container .arrow_area .prev,
+body main section.main_container .slideshow-container .arrow_area .next {
+  cursor: pointer;
+  width: 36px;
+  height: 36px;
+  opacity: 75%;
+  margin-top: -22px;
+  transition: 0.6s ease;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
+}
+body main section.main_container .slideshow-container .arrow_area .next {
+  right: 0;
+  border-radius: 3px 0 0 3px;
+}
+body main section.main_container .slideshow-container div.dot_area {
+  position: absolute;
+  top: 372px;
+  height: 12px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+body main section.main_container .slideshow-container div.dot_area .dot {
+  cursor: pointer;
+  height: 12px;
+  width: 12px;
+  margin: 0 2px;
+  background-color: #ffffff;
+  border-radius: 50%;
+  display: inline-block;
+  transition: background-color 0.6s ease;
+}
+body main section.main_container .slideshow-container div.dot_area .dot:hover, body main section.main_container .slideshow-container div.dot_area .dot.active {
+  background-color: #000000;
+  border: solid 1px #ffffff;
+}
+body main section.main_container section.second_container {
+  width: 600px;
+  height: 400px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  color: #666666;
+}
+body main section.main_container section.second_container h2 {
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 24px;
+  margin-bottom: 15px;
+}
+body main section.main_container section.second_container h4 {
+  font-size: 16px;
+  font-weight: 400;
+  margin-bottom: 15px;
+}
+body main section.main_container section.second_container form {
+  width: 600px;
+  height: 320px;
+  background-color: #e8e8e8;
+  border-radius: 5px;
+  padding: 15px 20px 0 20px;
+  display: flex;
+  flex-direction: column;
+}
+body main section.main_container section.second_container form h3 {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 15px;
+}
+body main section.main_container section.second_container form div {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+body main section.main_container section.second_container form div h3,
+body main section.main_container section.second_container form div h4 {
+  margin: 0 5px 0 0;
+  font-size: 16px;
+  line-height: 137.5%;
+}
+body main section.main_container section.second_container form div input.date {
+  height: 35px;
+  width: 193px;
+}
+body main section.main_container section.second_container form div label.container {
+  display: block;
+  align-items: center;
+  position: relative;
+  padding: 4px 8px 4px 26px;
+  margin-right: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 13.3px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+}
+body main section.main_container section.second_container form div label.container input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+body main section.main_container section.second_container form div label.container .checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 22px;
+  width: 22px;
+  background-color: #ffffff;
+  border-radius: 50%;
+}
+body main section.main_container section.second_container form div label.container .checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+body main section.main_container section.second_container form div label.container:hover input ~ .checkmark {
+  background-color: #ffffff;
+}
+body main section.main_container section.second_container form div label.container input:checked ~ .checkmark {
+  background-color: #ffffff;
+}
+body main section.main_container section.second_container form div label.container input:checked ~ .checkmark:after {
+  display: block;
+}
+body main section.main_container section.second_container form div label.container .checkmark:after {
+  top: 2px;
+  left: 2px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #448899;
+}
+body main section.main_container section.second_container form button.schedule_btn {
+  width: 154px;
+  height: 36px;
+  background-color: #448899;
+  font-size: 19px;
+  font-weight: 400;
+  color: #ffffff;
+  border: 0;
+  border-radius: 5px 5px 5px 5px;
+  padding: 10px 20px 10px 20px;
+  line-height: 16px;
+}
 body main article {
   width: 1200px;
   display: flex;
@@ -335,6 +526,7 @@ body main article div.box_area {
   align-items: center;
 }
 body main article div.box_area div.box {
+  cursor: pointer;
   height: 242px;
   width: 270px;
   display: flex;
@@ -350,13 +542,14 @@ body main article div.box_area div.box figure {
   height: 197px;
   width: 270px;
   background-size: cover;
+  background-position: center;
   display: flex;
   justify-content: flex-start;
   align-items: flex-end;
   border-radius: 5px 5px 0 0;
 }
-body main article div.box_area div.box figure p {
-  width: 270px;
+body main article div.box_area div.box figure figcaption {
+  width: 100%;
   height: 40px;
   padding: 10px;
   font-size: 16px;
@@ -392,6 +585,38 @@ body main article div.box_area div.box div.attraction_text div.category {
   color: #757575;
   font-weight: 500;
 }
+body main hr {
+  margin-bottom: 40px;
+  border: solid 1px #e8e8e8;
+  width: 100%;
+  max-width: 1200px;
+}
+body main article.attraction_info div {
+  padding: 10px 10px 60px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  color: #666666;
+  margin-bottom: 40px;
+}
+body main article.attraction_info div section#description {
+  line-height: 100%;
+  padding-bottom: 32px;
+}
+body main article.attraction_info div section {
+  margin-bottom: 20px;
+  font-size: 16px;
+  font-weight: 400;
+}
+body main article.attraction_info div section h3 {
+  height: 32px;
+}
+body main article.attraction_info div section h4 {
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 150%;
+}
 body main footer {
   width: 100%;
   height: 104px;
@@ -425,6 +650,20 @@ body main footer div {
   body main article div.box_area div.box figure p {
     width: 100%;
   }
+  body main section.main_container {
+    width: 100%;
+  }
+  body main section.main_container .slideshow-container,
+  body main section.main_container section.second_container {
+    width: calc((100% - 30px) / 2);
+  }
+  body main section.main_container .slideshow-container form,
+  body main section.main_container section.second_container form {
+    width: 100%;
+  }
+  body main hr {
+    width: calc(100% - 20px);
+  }
 }
 @media screen and (max-width: 600px) {
   body main div.welcome div.welcome_content div.search {
@@ -448,6 +687,33 @@ body main footer div {
   }
   body main article div.box_area div.box div.attraction_text {
     height: 45px;
+  }
+  body main section.main_container {
+    width: 100%;
+    height: 760px;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0;
+    margin-top: 0;
+    border-radius: 0;
+  }
+  body main section.main_container .slideshow-container {
+    height: 350px;
+    width: 100%;
+    border-radius: 0;
+  }
+  body main section.main_container .slideshow-container div.mySlides {
+    border-radius: 0;
+  }
+  body main section.main_container .slideshow-container div.dot_area {
+    top: 328px;
+  }
+  body main section.main_container section.second_container {
+    height: 390px;
+    width: calc(100% - 20px);
   }
 }
 @media screen and (max-width: 360px) {

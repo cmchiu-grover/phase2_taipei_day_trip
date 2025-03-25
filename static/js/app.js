@@ -55,9 +55,9 @@ async function getAttractions() {
     attrBox.className = "box";
     let imgContainer = document.createElement("figure");
     imgContainer.style.backgroundImage = `url(${attrList[i].images[0]})`;
-    let p_tag = document.createElement("p");
-    p_tag.textContent = `${attractionName}`;
-    imgContainer.appendChild(p_tag);
+    let figcaption = document.createElement("figcaption");
+    figcaption.textContent = `${attractionName}`;
+    imgContainer.appendChild(figcaption);
     boxArea.appendChild(imgContainer);
     let attractionText = document.createElement("div");
     attractionText.className = "attraction_text";
@@ -71,6 +71,9 @@ async function getAttractions() {
     attractionText.appendChild(categoryDiv);
     attrBox.appendChild(imgContainer);
     attrBox.appendChild(attractionText);
+    attrBox.addEventListener("click", function () {
+      location.href = `attraction/${attrList[i].id}`;
+    });
     boxArea.appendChild(attrBox);
   }
 
