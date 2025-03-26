@@ -1,11 +1,219 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Attraction</title>
-</head>
-<body>
-  
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Attraction</title>
+    <link rel="stylesheet" href="/static/css/style.css" />
+  </head>
+  <body>
+    <dialog class="signin_area">
+      <div class="decobar"></div>
+      <h2>登入會員帳號</h2>
+      <form method="post" action="/signin">
+        <div>
+          <label for="email"></label>
+          <input
+            class="signin_eamil"
+            type="text"
+            id="username"
+            name="email"
+            placeholder="輸入電子郵件"
+            required
+          />
+        </div>
+        <div>
+          <label for="password"></label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            placeholder="輸入密碼"
+            required
+          />
+        </div>
+
+        <button type="submit" style="cursor: pointer">登入帳戶</button>
+        <div class="link_text">
+          <p>還沒有帳戶？</p>
+          <p
+            class="hide_signin_display_signup"
+            style="cursor: pointer"
+            onclick="closeSigninShowSignup()"
+          >
+            點此註冊
+          </p>
+        </div>
+      </form>
+      <button
+        class="close_signin"
+        style="cursor: pointer"
+        onclick="closeSignin()"
+        autofocus
+      ></button>
+    </dialog>
+
+    <dialog class="signup_area">
+      <div class="decobar"></div>
+      <h2>註冊會員帳號</h2>
+      <form method="post" action="/signup" autocomplete="off">
+        <div>
+          <label for="name"></label>
+          <input
+            class="signup_name"
+            type="text"
+            name="name"
+            placeholder="輸入姓名"
+            required
+          />
+        </div>
+        <div>
+          <label for="email"></label>
+          <input
+            class="signup_email"
+            type="text"
+            name="email"
+            placeholder="輸入電子郵件"
+            required
+          />
+        </div>
+        <div>
+          <label for="password"></label>
+          <input
+            class="signup_password"
+            type="password"
+            name="password"
+            pattern="[a-zA-Z0-9]{8,}"
+            autocomplete="new-password"
+            placeholder="輸入密碼"
+            required
+          />
+        </div>
+        <div class="regis_submit">
+          <button type="submit" style="cursor: pointer">註冊新帳戶</button>
+        </div>
+        <div class="link_text">
+          <p>已經有帳戶了？</p>
+          <p
+            class="hide_signup_display_signin"
+            onclick="closeSignupShowSignin()"
+            style="cursor: pointer"
+          >
+            點此登入
+          </p>
+        </div>
+      </form>
+      <button
+        class="close_signup"
+        onclick="closeSignup()"
+        style="cursor: pointer"
+        autofocus
+      ></button>
+    </dialog>
+
+    <main>
+      <header class="header_underline">
+        <div class="header_area">
+          <a class="web_title" href="/">台北一日遊</a>
+          <nav class="header_nav">
+            <ul>
+              <li>預定行程</li>
+              <li style="display: flex">
+                <p class="p_signin" style="cursor: pointer">登入</p>
+                /
+                <p class="p_signup" style="cursor: pointer">註冊</p>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </header>
+
+      <section class="main_container">
+        <div class="slideshow-container">
+          <!-- Full-width images with number and caption text -->
+          <!-- <div class="mySlides fade">
+            <img />
+          </div> -->
+
+          <!-- Next and previous buttons -->
+          <div class="arrow_area">
+            <img class="prev" src="/static/img/left_arrow.png" />
+            <img class="next" src="/static/img/right_arrow.png" />
+          </div>
+          <!-- The dots/circles -->
+          <div class="dot_area" style="text-align: center">
+            <!-- <span class="dot" onclick="currentSlide(1)"></span> -->
+          </div>
+        </div>
+
+        <section class="second_container">
+          <h2 id="attraction_name"></h2>
+
+          <h4 id="attraction_category_mrt"></h4>
+          <form id="order_form" action="">
+            <h3>訂購行程</h3>
+            <h4>以此景點為中心的一日行程，帶您探索城市角落故事</h4>
+            <div>
+              <h3>選擇日期：</h3>
+              <input class="date" type="date" />
+            </div>
+            <div>
+              <h3>選擇時間：</h3>
+              <label class="container"
+                >上半天
+                <input
+                  type="radio"
+                  checked="checked"
+                  name="selected_time"
+                  value="gozen"
+                />
+                <span class="checkmark"></span>
+              </label>
+              <label class="container"
+                >下半天
+                <input type="radio" name="selected_time" value="gogo" />
+                <span class="checkmark"></span>
+              </label>
+            </div>
+            <div>
+              <h3>導覽費用：</h3>
+              <p id="price">2000元</p>
+            </div>
+            <button class="schedule_btn" type="submit" style="cursor: pointer">
+              開始預約行程
+            </button>
+          </form>
+        </section>
+      </section>
+
+      <hr />
+
+      <article class="attraction_info">
+        <!-- <div>
+          <section id="description">
+            saepe hic! corrupti ea laboriosam amet
+          </section>
+
+          <section>
+            <h3>景點地址</h3>
+            <h4 id="address">Lorem ipsum dolor sit amet.</h4>
+          </section>
+
+          <section>
+            <h3>交通方式：</h3>
+            <h4 id="transport">
+              捷運站名：忠孝復興站4號出口1.公車：204、212、212直、232、232副、262、262(區間)、278、299、521、605、605(副)、605(新台五線)、667、903、忠孝新幹線至頂好市場站
+              2.車位：太平洋崇光百貨地下停車場或市民大道附近地下停車場
+            </h4>
+          </section>
+        </div> -->
+      </article>
+
+      <footer>
+        <div>COPYRIGHT © 2021 台北一日遊</div>
+      </footer>
+    </main>
+
+    <script src="/static/js/slide.js"></script>
+  </body>
 </html>
