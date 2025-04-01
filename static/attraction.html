@@ -10,13 +10,13 @@
     <dialog class="signin_area">
       <div class="decobar"></div>
       <h2>登入會員帳號</h2>
-      <form method="post" action="/signin">
+      <form method="post" action="/api/user/auth">
         <div>
           <label for="email"></label>
           <input
-            class="signin_eamil"
+            class="signin_email"
             type="text"
-            id="username"
+            id="signin_email"
             name="email"
             placeholder="輸入電子郵件"
             required
@@ -26,43 +26,41 @@
           <label for="password"></label>
           <input
             type="password"
-            id="password"
+            id="signin_password"
             name="password"
             placeholder="輸入密碼"
             required
           />
         </div>
 
-        <button type="submit" style="cursor: pointer">登入帳戶</button>
+        <button type="button" id="signin_button" style="cursor: pointer">
+          登入帳戶
+        </button>
         <div class="link_text">
-          <p>還沒有帳戶？</p>
+          <p id="signinAreaMsg">還沒有帳戶？</p>
           <p
+            id="hide_signin_display_signup"
             class="hide_signin_display_signup"
             style="cursor: pointer"
-            onclick="closeSigninShowSignup()"
           >
             點此註冊
           </p>
         </div>
       </form>
-      <button
-        class="close_signin"
-        style="cursor: pointer"
-        onclick="closeSignin()"
-        autofocus
-      ></button>
+      <button class="close_signin" style="cursor: pointer" autofocus></button>
     </dialog>
 
     <dialog class="signup_area">
       <div class="decobar"></div>
       <h2>註冊會員帳號</h2>
-      <form method="post" action="/signup" autocomplete="off">
+      <form method="post" action="/api/user" autocomplete="off">
         <div>
           <label for="name"></label>
           <input
             class="signup_name"
             type="text"
             name="name"
+            id="signup_name"
             placeholder="輸入姓名"
             required
           />
@@ -73,6 +71,7 @@
             class="signup_email"
             type="text"
             name="email"
+            id="signup_email"
             placeholder="輸入電子郵件"
             required
           />
@@ -83,6 +82,7 @@
             class="signup_password"
             type="password"
             name="password"
+            id="signup_password"
             pattern="[a-zA-Z0-9]{8,}"
             autocomplete="new-password"
             placeholder="輸入密碼"
@@ -90,25 +90,23 @@
           />
         </div>
         <div class="regis_submit">
-          <button type="submit" style="cursor: pointer">註冊新帳戶</button>
+          <button type="button" id="signup_button" style="cursor: pointer">
+            註冊新帳戶
+          </button>
         </div>
         <div class="link_text">
-          <p>已經有帳戶了？</p>
+          <p id="signupAreaMsg"></p>
           <p
+            id="hide_signup_display_signin"
             class="hide_signup_display_signin"
-            onclick="closeSignupShowSignin()"
             style="cursor: pointer"
           >
             點此登入
           </p>
         </div>
       </form>
-      <button
-        class="close_signup"
-        onclick="closeSignup()"
-        style="cursor: pointer"
-        autofocus
-      ></button>
+      <button class="close_signup" style="cursor: pointer" autofocus></button>
+      <!-- <p>註冊成功</p> -->
     </dialog>
 
     <main>
@@ -118,10 +116,13 @@
           <nav class="header_nav">
             <ul>
               <li>預定行程</li>
-              <li style="display: flex">
+              <li id="sign_in_up">
                 <p class="p_signin" style="cursor: pointer">登入</p>
                 /
                 <p class="p_signup" style="cursor: pointer">註冊</p>
+              </li>
+              <li id="sign_out">
+                <p class="p_signout" style="cursor: pointer">登出系統</p>
               </li>
             </ul>
           </nav>
@@ -214,6 +215,6 @@
       </footer>
     </main>
 
-    <script src="/static/js/slide.js"></script>
+    <script type="module" src="/static/js/slide.js"></script>
   </body>
 </html>
