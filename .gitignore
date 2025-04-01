@@ -148,3 +148,6 @@ test.py
 test.js
 signpage.html
 static/css/*.map
+attraction.js
+ajax.js
+test.html
