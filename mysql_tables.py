@@ -90,8 +90,8 @@ def mysql_main():
     check_database()
     create_tables()
 
-# if __name__ == "__main__":
-#     mysql_main()
+if __name__ == "__main__":
+    mysql_main()
 
 # email = 'test001@gmail.com'
 
