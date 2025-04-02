@@ -34,6 +34,9 @@ const searchButton = document.querySelector("#search_button");
 const signupMessage = document.querySelector("#signupAreaMsg");
 const signinMessage = document.querySelector("#signinAreaMsg");
 
+const signupForm = document.querySelector("#signup_form");
+const signinForm = document.querySelector("#signin_form");
+
 export {
   keywordNav,
   leftArrow,
@@ -54,4 +57,6 @@ export {
   searchButton,
   signupMessage,
   signinMessage,
+  signupForm,
+  signinForm,
 };

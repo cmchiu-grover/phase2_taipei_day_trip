@@ -277,5 +277,5 @@ async def get_user_data(current_user: dict = Depends(getCurrentActiveUser)):
                 )
 
 
-# if __name__ == '__main__':
-#     uvicorn.run("app:app", port=8000, reload = True)
+if __name__ == '__main__':
+    uvicorn.run("app:app", port=8000, reload = True)

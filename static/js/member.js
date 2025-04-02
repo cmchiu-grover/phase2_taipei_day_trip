@@ -5,11 +5,6 @@ async function signup() {
   const email = document.getElementById("signup_email").value;
   const password = document.getElementById("signup_password").value;
 
-  if (email.trim() === "" || password.trim() === "" || email.trim() === "") {
-    alert("請先輸入資料再送出！");
-    return;
-  }
-
   try {
     const response = await fetch("/api/user", {
       method: "POST",
@@ -32,8 +27,7 @@ async function signup() {
   }
 }
 
-async function signin(event) {
-  event.preventDefault();
+async function signin() {
   const email = document.getElementById("signin_email").value;
   const password = document.getElementById("signin_password").value;
 

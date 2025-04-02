@@ -7,11 +7,12 @@ import {
   hideSignupDisplaySignin,
   signoutButton,
   signinButton,
-  signupButton,
   signinArea,
   signupArea,
   signupMessage,
   signinMessage,
+  signupForm,
+  signinForm,
 } from "./variables.js";
 
 import { signup, signin } from "./member.js";
@@ -56,11 +57,13 @@ function dialogEventListeners() {
     signinArea.showModal();
   });
 
-  signinButton.addEventListener("click", async (e) => {
-    await signin(e);
+  signinForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    await signin();
   });
 
-  signupButton.addEventListener("click", async () => {
+  signupForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
     await signup();
   });
 }
