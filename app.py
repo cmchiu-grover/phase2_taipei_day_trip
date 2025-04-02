@@ -7,13 +7,8 @@ from connection_pool import get_attraction_list_rank
 from model import get_db
 import uvicorn
 from mysql_crud import UserForm, checkUser, getPasswordHash, verifyPassword, createAccessToken, getCurrentActiveUser
-import jwt
-from dotenv import load_dotenv
-import os
+
 from datetime import timedelta
-from fastapi.security import OAuth2PasswordRequestForm
-
-
 
 app=FastAPI()
 
@@ -175,30 +170,38 @@ def signup(
     email: str = Form(...),
     password: str = Form(...),
     ):
+    try:
+        existing_user = checkUser(email)
 
-    existing_user = checkUser(email)
+        if existing_user: 
+            return JSONResponse(
+                status_code=400,
+                content={
+                    "error":True,
+                    "message":"電子郵件重複"
+                    }
+                    )
+        
+        password_hs256 = getPasswordHash(password)
+        
+        user_data = UserForm(name, email, password_hs256)
 
-    if existing_user: 
+        user_data.insertUser()
+
         return JSONResponse(
-            status_code=400,
+            status_code=200,
             content={
-                "error":True,
-                "message":"電子郵件重複..."
+                "ok": True
                 }
                 )
-    
-    password_hs256 = getPasswordHash(password)
-    
-    user_data = UserForm(name, email, password_hs256)
-
-    user_data.insertUser()
-
-    return JSONResponse(
-        status_code=200,
-        content={
-             "ok": True
-            }
-            )         
+    except:
+        return JSONResponse(
+            status_code=500,
+            content={
+                "error":True,
+                "message":"伺服器錯誤..."
+                }
+                )  
 
 @app.post("/api/user/auth")
 async def signin_form(
@@ -206,48 +209,57 @@ async def signin_form(
     email: str = Form(...),
     password: str = Form(...),
     ):
+    try:
 
-    existing_user = checkUser(email)
+        existing_user = checkUser(email)
 
-    if not existing_user:
-        print("not existing_user")
+        if not existing_user:
+            # print("not existing_user")
 
+            return JSONResponse(
+                status_code=400,
+                content={
+                    "error":True,
+                    "message":"查無使用者或密碼錯誤"
+                    }
+                    )
+        
+        
+        if verifyPassword(password, existing_user["password"]):
+            # print("Signup...")
+
+            ACCESS_TOKEN_EXPIRE_DAYS = 7
+
+            access_token_expires = timedelta(days = ACCESS_TOKEN_EXPIRE_DAYS)
+            access_token = createAccessToken(
+                data={
+                    "username": existing_user["name"],
+                    "email": existing_user["email"],
+                    "user_id":existing_user["id"]
+                    },
+                    expires_delta = access_token_expires
+                    )
+
+            return JSONResponse(
+                status_code=200,
+                content={
+                    "token": access_token
+                    },
+                    )
+        else:
+            return JSONResponse(
+                status_code=400,
+                content={
+                    "error":True,
+                    "message":"查無使用者或密碼錯誤"
+                    }
+                    )
+    except:
         return JSONResponse(
-            status_code=400,
+            status_code=500,
             content={
                 "error":True,
-                "message":"查無使用者或密碼錯誤..."
-                }
-                )
-    
-    
-    if verifyPassword(password, existing_user["password"]):
-        # print("Signup...")
-
-        ACCESS_TOKEN_EXPIRE_DAYS = 7
-
-        access_token_expires = timedelta(days = ACCESS_TOKEN_EXPIRE_DAYS)
-        access_token = createAccessToken(
-            data={
-                "username": existing_user["name"],
-                "email": existing_user["email"],
-                "user_id":existing_user["id"]
-                },
-                expires_delta = access_token_expires
-                )
-
-        return JSONResponse(
-            status_code=200,
-            content={
-                "token": access_token
-                },
-                )
-    else:
-        return JSONResponse(
-            status_code=400,
-            content={
-                "error":True,
-                "message":"查無使用者或密碼錯誤..."
+                "message":"伺服器錯誤..."
                 }
                 )
 

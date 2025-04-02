@@ -1,11 +1,4 @@
-import {
-  signupArea,
-  signinArea,
-  signupMessage,
-  hideSignupDisplaySignin,
-  hideSigninDisplaySignup,
-  signinMessage,
-} from "./variables.js";
+import { signinArea, signupMessage, signinMessage } from "./variables.js";
 
 async function signup() {
   const username = document.getElementById("signup_name").value;
@@ -13,7 +6,7 @@ async function signup() {
   const password = document.getElementById("signup_password").value;
 
   if (email.trim() === "" || password.trim() === "" || email.trim() === "") {
-    alert("請先輸入資料再送出...");
+    alert("請先輸入資料再送出！");
     return;
   }
 
@@ -29,13 +22,9 @@ async function signup() {
     // console.log(data);
 
     if (data.ok) {
-      if (hideSignupDisplaySignin.textContent.trim() === "") {
-        hideSignupDisplaySignin.textContent = "點此登入";
-      }
       signupMessage.textContent = "註冊成功，";
     } else {
-      hideSignupDisplaySignin.textContent = "";
-      signupMessage.textContent = data.message;
+      signupMessage.textContent = data.message + "，";
     }
   } catch (e) {
     console.log("response 失敗...");
@@ -49,7 +38,7 @@ async function signin(event) {
   const password = document.getElementById("signin_password").value;
 
   if (email.trim() === "" || password.trim() === "") {
-    alert("請先輸入帳號或密碼再送出...");
+    alert("請先輸入帳號或密碼再送出！");
     return;
   }
 
@@ -72,8 +61,7 @@ async function signin(event) {
     signinArea.close();
     window.location.reload();
   } else {
-    hideSigninDisplaySignup.textContent = "";
-    signinMessage.textContent = data.message;
+    signinMessage.textContent = data.message + "，";
   }
 }
 
