@@ -14,13 +14,24 @@ dbconfig = {
 
 connection_pool = pooling.MySQLConnectionPool(
     pool_name="mypool",
-    pool_size=5,  
+    pool_size=5,
+    pool_reset_session=True,
+    pool_pre_ping=True,
     **dbconfig
 )
 
 
 def get_connection_pool():
-    return connection_pool.get_connection()
+    try:
+        connection = connection_pool.get_connection()
+        if connection.is_connected():
+            return connection
+        else:
+            return connection_pool.get_connection()
+    except Exception as e:
+        print(e)
+        return None
+    
 
 def get_attraction_list_rank(page: int, keyword: str = ''):
     num_per_page: int = 12

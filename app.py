@@ -3,7 +3,7 @@ from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from tables import Attraction, Mrt, Category, Image, Base
 from sqlalchemy.sql import func, case
-from connection_pool import get_attraction_list_rank
+from mysql_connect import get_attraction_list_rank
 from model import get_db
 import uvicorn
 from mysql_crud import UserForm, checkUser, getPasswordHash, verifyPassword, createAccessToken, getCurrentActiveUser
@@ -277,5 +277,5 @@ async def get_user_data(current_user: dict = Depends(getCurrentActiveUser)):
                 )
 
 
-if __name__ == '__main__':
-    uvicorn.run("app:app", port=8000, reload = True)
+# if __name__ == '__main__':
+#     uvicorn.run("app:app", port=8000, reload = True)
