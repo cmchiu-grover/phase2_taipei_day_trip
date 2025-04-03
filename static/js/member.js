@@ -9,9 +9,13 @@ async function signup() {
     const response = await fetch("/api/user", {
       method: "POST",
       headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
+        "Content-Type": "application/json",
       },
-      body: `name=${username}&email=${email}&password=${password}`,
+      body: JSON.stringify({
+        name: username,
+        email: email,
+        password: password,
+      }),
     });
     const data = await response.json();
     // console.log(data);
@@ -31,17 +35,15 @@ async function signin() {
   const email = document.getElementById("signin_email").value;
   const password = document.getElementById("signin_password").value;
 
-  if (email.trim() === "" || password.trim() === "") {
-    alert("請先輸入帳號或密碼再送出！");
-    return;
-  }
-
   const response = await fetch("/api/user/auth", {
-    method: "POST",
+    method: "PUT",
     headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
+      "Content-Type": "application/json",
     },
-    body: `email=${email}&password=${password}`,
+    body: JSON.stringify({
+      email: email,
+      password: password,
+    }),
   });
 
   const data = await response.json();

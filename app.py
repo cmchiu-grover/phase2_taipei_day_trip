@@ -166,12 +166,10 @@ def get_attraction_list(
 @app.post("/api/user")
 def signup(
     # request: Request,
-    name: str = Form(...),
-    email: str = Form(...),
-    password: str = Form(...),
+    user_regis_data: dict = Body(...)
     ):
     try:
-        existing_user = checkUser(email)
+        existing_user = checkUser(user_regis_data["email"])
 
         if existing_user: 
             return JSONResponse(
@@ -182,9 +180,9 @@ def signup(
                     }
                     )
         
-        password_hs256 = getPasswordHash(password)
+        password_hs256 = getPasswordHash(user_regis_data["password"])
         
-        user_data = UserForm(name, email, password_hs256)
+        user_data = UserForm(user_regis_data["name"], user_regis_data["email"], password_hs256)
 
         user_data.insertUser()
 
@@ -203,15 +201,15 @@ def signup(
                 }
                 )  
 
-@app.post("/api/user/auth")
+@app.put("/api/user/auth")
 async def signin_form(
     # request: Request,
-    email: str = Form(...),
-    password: str = Form(...),
+    user_data: dict = Body(...)
     ):
     try:
-
-        existing_user = checkUser(email)
+        print(user_data)
+        existing_user = checkUser(user_data.get("email"))
+        print(existing_user)
 
         if not existing_user:
             # print("not existing_user")
@@ -225,7 +223,7 @@ async def signin_form(
                     )
         
         
-        if verifyPassword(password, existing_user["password"]):
+        if verifyPassword(user_data["password"], existing_user["password"]):
             # print("Signup...")
 
             ACCESS_TOKEN_EXPIRE_DAYS = 7
