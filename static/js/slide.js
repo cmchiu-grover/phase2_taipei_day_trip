@@ -1,7 +1,8 @@
-let currentPage = 0;
-let currentKeyword = "";
-let isLoading = false;
-let mutux = Promise.then;
+import { dialogEventListeners } from "./dialog.js";
+// let currentPage = 0;
+// let currentKeyword = "";
+// let isLoading = false;
+let slideIndex = 1;
 
 class AttractionInfo {
   constructor(attractionData) {
@@ -134,7 +135,7 @@ async function getAttractionData() {
   // console.log("開始做 dot area");
   // console.log(attrData.images.length);
   const dotDivArea = document.querySelector("div.dot_area");
-  for (i = 0; i < attrData.images.length; i++) {
+  for (let i = 0; i < attrData.images.length; i++) {
     let dotSpan = document.createElement("span");
     dotSpan.className = `dot_${i + 1} dot`;
 
@@ -172,24 +173,10 @@ function showSlides(n) {
     dots[i].className = dots[i].className.replace(" active", "");
   }
   // console.log(slideIndex);
+  // console.log(slides);
   slides[slideIndex - 1].style.display = "block";
   dots[slideIndex - 1].className += " active";
 }
-
-async function main() {
-  try {
-    await getAttractionData();
-
-    // console.log(`完成 getAttractionData()`);
-
-    showSlides(slideIndex);
-  } catch (e) {
-    console.log(e);
-  }
-}
-
-let slideIndex = 1;
-main();
 
 const nextArrow = document.querySelector("img.next");
 nextArrow.addEventListener("click", () => plusSlides(1));
@@ -213,8 +200,8 @@ dotArea.addEventListener("click", function (event) {
 const priceP = document.querySelector("#price");
 const selectTime = document.querySelectorAll('input[name="selected_time"]');
 
-console.log(priceP);
-console.log(selectTime);
+// console.log(priceP);
+// console.log(selectTime);
 
 selectTime.forEach((checked) => {
   checked.addEventListener("change", () => {
@@ -225,3 +212,43 @@ selectTime.forEach((checked) => {
     }
   });
 });
+
+async function showSignInOut() {
+  const token = localStorage.getItem("access_token");
+  const signInUP = document.querySelector("#sign_in_up");
+  const signOut = document.querySelector("#sign_out");
+
+  if (token) {
+    const response = await fetch("/api/user/auth", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const JSON = await response.json();
+    const userData = JSON.data;
+
+    if (userData) {
+      signInUP.style.display = "none";
+      signOut.style.display = "flex";
+    }
+  } else {
+    signOut.style.display = "none";
+    signInUP.style.display = "flex";
+  }
+}
+
+async function main() {
+  try {
+    await showSignInOut();
+
+    await getAttractionData();
+
+    showSlides(slideIndex);
+  } catch (e) {
+    console.log(e);
+  }
+}
+
+main();
+dialogEventListeners();
