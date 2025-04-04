@@ -96,26 +96,82 @@ def get_attraction_list_rank(page: int, keyword: str = ''):
     return [results, next_page]
 
 
-# cnx = get_connection_pool()
-# cursor = cnx.cursor(dictionary=True)
+def get_mrt_list():
+    
+    conn = get_connection_pool()
+    cursor = conn.cursor()
 
-# if cnx and cnx.is_connected():
+    sql = """
+        SELECT mrt.name, COUNT(attraction.id) AS qty
+        FROM mrt
+        LEFT JOIN attraction ON mrt.id = attraction.mrt_id
+        GROUP BY mrt.id
+        ORDER BY 
+            qty IS NULL,
+            qty DESC,
+            mrt.id
+    """
+    cursor.execute(sql)
+    mrt_list = [row[0] for row in cursor.fetchall()]
 
-#     with cnx.cursor() as cursor:
+    cursor.close()
+    conn.close()
 
-#         result = cursor.execute("SHOW tables;")
+    if not mrt_list:
+        return None
 
-#         rows = cursor.fetchall()
+    return mrt_list
 
-#         print(f"以下為可使用的 tables（共有 {len(rows)} 張）：")
 
-#         for rows in rows:
+def get_attraction(attractionId: int):
+    try:
+        conn = get_connection_pool()
+        cursor = conn.cursor(dictionary=True)
 
-#             print(rows)
+        # 查 attraction
+        cursor.execute("SELECT * FROM attraction WHERE id = %s", (attractionId,))
+        attraction = cursor.fetchone()
 
-#     cursor.close()
-#     cnx.close()
+        if not attraction:
+            return None
 
-# else:
+        # 查 category 名稱
+        cursor.execute("SELECT name FROM category WHERE id = %s", (attraction["category_id"],))
+        category = cursor.fetchone()
 
-#     print("Could not connect")
+        # 查 mrt 名稱
+        if attraction["mrt_id"]:
+            cursor.execute("SELECT name FROM mrt WHERE id = %s", (attraction["mrt_id"],))
+            mrt = cursor.fetchone()
+        else:
+            mrt = None
+
+        # 查 image URLs
+        cursor.execute("SELECT url FROM images WHERE attraction_id = %s", (attractionId,))
+        images = cursor.fetchall()
+        image_urls = [img["url"] for img in images]
+
+        return {
+            "data": {
+                "id": attraction["id"],
+                "name": attraction["name"],
+                "category": category["name"] if category else None,
+                "description": attraction["description"],
+                "address": attraction["address"],
+                "transport": attraction["transport"],
+                "mrt": mrt["name"] if mrt else None,
+                "lat": float(attraction["lat"]),
+                "lng": float(attraction["lng"]),
+                "images": image_urls
+            }
+        }
+
+    except Exception as e:
+        print(e)
+        return None
+
+    finally:
+        cursor.close()
+        conn.close()
+
+
