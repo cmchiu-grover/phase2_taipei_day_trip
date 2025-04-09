@@ -7,15 +7,15 @@ import os
 import jwt
 from passlib.context import CryptContext
 from datetime import datetime, timedelta, timezone
-from fastapi import Depends, HTTPException, status, Header
-from fastapi.security import OAuth2PasswordBearer
+from fastapi import Depends, HTTPException, status, Header, Request
+# from fastapi.security import OAuth2PasswordBearer
 
 
 load_dotenv()
 
 SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = "HS256"
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/user/auth")
+# oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/user/auth")
 
 cnx = get_connection_pool()
 cursor = cnx.cursor(dictionary=True)
@@ -30,6 +30,9 @@ class UserForm:
 
     def insertUser(self):
         try:
+            cnx = get_connection_pool()
+            cursor = cnx.cursor()
+
             insert_query = (
                 "INSERT INTO `users` (`name`, `email`, `password`) "
                 "VALUES (%s, %s, %s)"
@@ -39,11 +42,79 @@ class UserForm:
             cnx.commit()
 
             print(f"User {self.email} inserted successfully.")
+
         except mysql.connector.Error as err:
             print(f"Error: {err}")
-            cnx.rollback() 
+            cnx.rollback()
 
+        finally:
+            try:
+                cursor.close()
+                cnx.close()
+            except:
+                pass
     
+       
+class BookingForm:
+    def __init__(self, user_id, attraction_id, date, time, price):
+        self.user_id = user_id
+        self.attraction_id = attraction_id
+        self.date = date
+        self.time = time
+        self.price = price
+
+    def insert_booking(self):
+        try:
+            cnx = get_connection_pool()
+            cursor = cnx.cursor()
+
+            insert_query = (
+                "INSERT INTO `bookings` (`user_id`, `attraction_id`, `booking_date`, `booking_time`, `price`) "
+                "VALUES (%s, %s, %s, %s, %s)"
+            )
+
+            cursor.execute(insert_query, (self.user_id, self.attraction_id, self.date, self.time, self.price))
+            cnx.commit()
+
+            print(f"User {self.attraction_id} inserted successfully.")
+
+        except mysql.connector.Error as err:
+            print(f"Error: {err}")
+            cnx.rollback()
+
+        finally:
+            try:
+                cursor.close()
+                cnx.close()
+            except:
+                pass
+    
+    def update_booking(self):
+        try:
+            cnx = get_connection_pool()
+            cursor = cnx.cursor()
+
+            update_query = (
+                "UPDATE `bookings` SET `attraction_id`=%s, `booking_date`=%s, `booking_time`=%s, `price`=%s WHERE `user_id` = %s "
+            )
+
+            cursor.execute(update_query, (self.attraction_id, self.date, self.time, self.price, self.user_id))
+            cnx.commit()
+
+            print(f"User's booking {self.attraction_id} updated successfully.")
+
+        except mysql.connector.Error as err:
+            print(f"Error: {err}")
+            cnx.rollback()
+
+        finally:
+            try:
+                cursor.close()
+                cnx.close()
+            except:
+                pass
+
+
 def checkUser(new_email):
     try:
         cnx = get_connection_pool()  
@@ -52,8 +123,6 @@ def checkUser(new_email):
         query = "SELECT id, name, email, password FROM users WHERE email = %s"
         cursor.execute(query, (new_email,))
         existing_user = cursor.fetchone()  
-        cursor.close()
-        cnx.close()
 
         if existing_user:  
             print("email 存在...")
@@ -65,6 +134,13 @@ def checkUser(new_email):
     except Exception as e:
         print(f"錯誤: {e}")
         return None
+    
+    finally:
+        try:
+            cursor.close()
+            cnx.close()
+        except:
+            pass
 
 
 def getPasswordHash(password):
@@ -86,26 +162,85 @@ def createAccessToken(data: dict, expires_delta: timedelta | None = None):
     return token
 
 
-def getCurrentUser(token: str = Depends(oauth2_scheme)):
-    credentials_exception = HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Could not validate credentials",
-        headers={"WWW-Authenticate": "Bearer"},
-    )
+async def getCurrentUser(request: Request):
+
     try:
+        auth_header = request.headers.get("Authorization")
+        if not auth_header.startswith("Bearer "):
+            return None
+        
+        token = auth_header.split("Bearer ")[1]
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])  
         username: str = payload.get("username")
         email: str = payload.get("email")
         user_id: int = payload.get("user_id")
         if username is None or email is None or user_id is None:
-            raise credentials_exception
+            return None
         user = checkUser(email)  
         return user
-    except:
-        raise credentials_exception
+    except Exception as e:
+        print(e)
+        return False
 
-async def getCurrentActiveUser(current_user: dict = Depends(getCurrentUser)):
-    return current_user
+async def getCurrentActiveUser(request: Request):
+    return await getCurrentUser(request)
+
+def check_booking(user_id):
+    try:
+        cnx = get_connection_pool()  
+        cursor = cnx.cursor(dictionary=True)  
+
+        query = "SELECT id, user_id, attraction_id, booking_date, booking_time, price FROM bookings WHERE user_id = %s"
+        cursor.execute(query, (user_id,))
+        existing_booking = cursor.fetchone()  
+
+        if existing_booking:  
+            print("已經有預定...")
+            return existing_booking
+        else:
+            print("沒有預定...")
+            return None
+
+    except Exception as e:
+        print(f"錯誤: {e}")
+        return None
+    
+    finally:
+        try:
+            cursor.close()
+            cnx.close()
+        except:
+            pass
+
+def delete_booking(user_id):
+    try:
+        cnx = get_connection_pool()
+        cursor = cnx.cursor()
+
+        update_query = (
+            "DELETE FROM `bookings` WHERE `user_id` = %s "
+        )
+
+        cursor.execute(update_query, (user_id,))
+        cnx.commit()
+
+        print(f"User ID: {user_id}'s booking deleted successfully.")
+
+        return True
+
+    except mysql.connector.Error as err:
+        print(f"Error: {err}")
+        cnx.rollback()
+        return False
+
+    finally:
+        try:
+            cursor.close()
+            cnx.close()
+        except:
+            pass
+        
+
 
 # asign_token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3QwMDIiLCJlbWFpbCI6InRlc3QwMDJAZ21haWwuY29tIiwidXNlcl9pZCI6MiwiZXhwIjoxNzQ0MDkwNTQyfQ.wx1QnQW3LgFadFc0we8m9sNG6Ql2LYAqfGccWjLRaVE"
 # # user_dict = getCurrentUser(asign_token)

@@ -18,22 +18,22 @@ TABLES['users'] = (
     "  INDEX `index_email` (`email`)"
     ") ENGINE=InnoDB")
 
-# TABLES['bookings'] = (
-#     "CREATE TABLE `bookings` ("
-#     "  `id` INT(11) NOT NULL AUTO_INCREMENT,"
-#     "  `user_id` INT(11) NOT NULL,"
-#     "  `attraction_id` INT(11) NOT NULL,"
-#     "  `booking_date` DATE NOT NULL,"
-#     "  `booking_time` ENUM('gozen', 'gogo') NOT NULL,"
-#     "  `price` INT(11) NOT NULL,"
-#     "  `creation_time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,"
-#     "  `updated_time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,"
-#     "  PRIMARY KEY (`id`),"
-#     "  FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,"
-#     "  FOREIGN KEY (`attraction_id`) REFERENCES `attraction` (`id`) ON DELETE CASCADE,"
-#     "  INDEX `index_booking_id` (`id`),"
-#     "  INDEX `index_booking_date` (`booking_date`)"  
-#     ") ENGINE=InnoDB")
+TABLES['bookings'] = (
+    "CREATE TABLE `bookings` ("
+    "  `id` INT(11) NOT NULL AUTO_INCREMENT,"
+    "  `user_id` INT(11) NOT NULL,"
+    "  `attraction_id` INT(11) NOT NULL,"
+    "  `booking_date` DATE NOT NULL,"
+    "  `booking_time` ENUM('morning', 'afternoon') NOT NULL,"
+    "  `price` INT(11) NOT NULL,"
+    "  `creation_time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,"
+    "  `updated_time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,"
+    "  PRIMARY KEY (`id`),"
+    "  FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,"
+    "  FOREIGN KEY (`attraction_id`) REFERENCES `attraction` (`id`) ON DELETE CASCADE,"
+    "  INDEX `index_booking_id` (`id`),"
+    "  INDEX `index_booking_date` (`booking_date`)"  
+    ") ENGINE=InnoDB")
 
 cnx = get_connection_pool()
 cursor = cnx.cursor(dictionary=True)

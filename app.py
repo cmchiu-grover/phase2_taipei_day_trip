@@ -3,7 +3,7 @@ from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from mysql_connect import get_attraction_list_rank, get_mrt_list, get_attraction
 import uvicorn
-from mysql_crud import UserForm, checkUser, getPasswordHash, verifyPassword, createAccessToken, getCurrentActiveUser
+from mysql_crud import UserForm, checkUser, getPasswordHash, verifyPassword, createAccessToken, getCurrentActiveUser, BookingForm, check_booking, delete_booking
 from datetime import timedelta
 
 app=FastAPI()
@@ -44,8 +44,6 @@ def api_mrts():
             status_code=500,
             content={"error": True, "message": "伺服器錯誤..."}
         )
-
-
 
 @app.get("/api/attraction/{attractionId}")
 def attraction(attractionId: int):
@@ -106,10 +104,7 @@ def get_attraction_list(
                 )
 
 @app.post("/api/user")
-def signup(
-    # request: Request,
-    user_regis_data: dict = Body(...)
-    ):
+def signup(user_regis_data: dict = Body(...)):
     try:
         existing_user = checkUser(user_regis_data["email"])
 
@@ -144,12 +139,9 @@ def signup(
                 )  
 
 @app.put("/api/user/auth")
-async def signin_form(
-    # request: Request,
-    user_data: dict = Body(...)
-    ):
+async def signin_form(user_data: dict = Body(...)):
     try:
-        print(user_data)
+        
         existing_user = checkUser(user_data.get("email"))
         print(existing_user)
 
@@ -204,8 +196,16 @@ async def signin_form(
                 )
 
 @app.get("/api/user/auth")
-async def get_user_data(current_user: dict = Depends(getCurrentActiveUser)):
+async def get_user_data(request: Request):
+    current_user = await getCurrentActiveUser(request)
     # print(current_user)
+    if not current_user:
+        return JSONResponse(
+            status_code=200,
+            content = { "data": None
+                }
+                )
+
     return JSONResponse(
             status_code=200,
             content = { "data": {
@@ -215,6 +215,219 @@ async def get_user_data(current_user: dict = Depends(getCurrentActiveUser)):
                 }
                 }
                 )
+
+@app.post("/api/booking")
+async def book_one_attraction(request: Request,
+    attr_data: dict = Body(...)
+    ):
+    current_user = await getCurrentActiveUser(request)
+    try:
+        # print(f"current_user is {current_user}")
+        if not current_user:
+            return JSONResponse(
+            status_code=403,
+            content={
+                "error": True,
+                "message": "未登入系統，拒絕存取"
+                }
+                )
+
+        user_id = current_user["id"]
+        existing_booking = check_booking(user_id)
+        # print(f"existing_booking is {existing_booking}")
+        # print(f"attr_data is {attr_data}")
+
+        try:
+            booking_data = BookingForm(user_id,
+                                        attr_data["attractionId"],
+                                        attr_data["date"],
+                                        attr_data["time"],
+                                        attr_data["price"])
+        except Exception as e:
+            print(f"booking_data 失敗，error：{e}")
+            return JSONResponse(
+            status_code=400,
+            content={
+                "error": True,
+                "message": f"建立失敗，error：{e}"
+                }
+                )
+        
+        # print(f"booking_data is {booking_data}")
+
+        if existing_booking:
+            print("Booking 存在...")
+            try:
+                booking_data.update_booking()
+                print("Booking updated...")
+            except Exception as e:
+                print(f"booking_data 更新失敗，error：{e}")
+                return JSONResponse(
+                status_code=400,
+                content={
+                    "error": True,
+                    "message": f"更新失敗，error：{e}"
+                    }
+                    )
+
+        else:
+            try:
+                booking_data.insert_booking()
+                print("Booking inserted...")
+            except Exception as e:
+                print(f"booking_data 建立失敗，error：{e}")
+                return JSONResponse(
+                status_code=400,
+                content={
+                    "error": True,
+                    "message": f"建立失敗，error：{e}"
+                    }
+                    )
+
+        return JSONResponse(
+            status_code=200,
+            content={
+                "ok": True
+                }
+                )
+    except Exception as e:
+         print(f"Error: {e}")
+         return JSONResponse(
+            status_code=500,
+            content={
+                "error":True,
+                "message":"伺服器錯誤..."
+                }
+                )  
+
+@app.get("/api/booking")
+async def get_booking_data(request: Request):
+    current_user = await getCurrentActiveUser(request)
+    try:
+        if not current_user:
+            return JSONResponse(
+            status_code=403,
+            content={
+                "error":True,
+                "message": "未登入系統，拒絕存取"
+                }
+                )
+        # print(f"開始取得預定資料...")
+        user_id = current_user["id"]
+        # print(f"預定的使用者為：{user_id}")
+        existing_booking = check_booking(user_id)
+        # print(f"existing_booking is {existing_booking}")
+
+        if not existing_booking:
+            return JSONResponse(
+                status_code=200,
+                content={
+                    "data": None,
+                }
+        )
+
+        
+
+        attraction_data = get_attraction(existing_booking["attraction_id"])["data"]
+        # print(f"attraction_data is {attraction_data}")
+        # print(f"id = {existing_booking["attraction_id"]}")
+        # print(f"name = {attraction_data["name"]}")
+        # print(f"address = {attraction_data["address"]}")
+        # print(f"image = {attraction_data["images"][0]}")
+        # print(f"date = {existing_booking["booking_date"]}")
+        # print(f"time = {existing_booking["booking_time"]}")
+        # print(f"price = {existing_booking["price"]}")
+
+        return JSONResponse(
+            status_code=200,
+            content={
+                "data":{
+                    "attraction":{
+                        "id":existing_booking["attraction_id"],
+                        "name":attraction_data["name"],
+                        "address":attraction_data["address"],
+                        "image":attraction_data["images"][0]
+
+                    },
+                    "date":existing_booking["booking_date"].strftime("%Y/%m/%d"),
+                    "time":existing_booking["booking_time"],
+                    "price":existing_booking["price"]
+                }
+            }
+        )
+    except Exception as e:
+        print(f"伺服器錯誤：{e}")
+        return JSONResponse(
+            status_code=500,
+            content={
+                "error": True,
+                "message": "伺服器錯誤..."
+            }
+        )
+        
+@app.delete("/api/booking")
+async def delete_booking_data(request: Request):
+    current_user = await getCurrentActiveUser(request)
+    print(current_user)
+    try:
+        print(f"開始刪除資料...，current_user is {current_user}")
+        if not current_user:
+            return JSONResponse(
+            status_code=403,
+            content={
+                "error": True,
+                "message": "未登入系統，拒絕存取"
+                }
+                )
+
+        user_id = current_user["id"]
+        existing_booking = check_booking(user_id)
+        # print(f"existing_booking is {existing_booking}")
+        # print(f"attr_data is {attr_data}")       
+        # print(f"booking_data is {booking_data}")
+
+        if existing_booking:
+            # print("Booking 存在，開始刪除...")
+            if delete_booking(user_id):
+                # print("Booking 刪除完畢...")
+                return JSONResponse(
+                status_code=200,
+                content={
+                    "ok": True
+                    }
+                    )
+            else:
+                # print("刪除時發生錯誤...")
+                return JSONResponse(
+                status_code=500,
+                content={
+                    "error":True,
+                    "message":"伺服器錯誤..."
+                    }
+                    )  
+
+        else:
+            return JSONResponse(
+            status_code=400,
+            content={
+                "error": True,
+                "message": "並無預定的行程，無法刪除！"
+                }
+                )
+
+
+    
+    except Exception as e:
+         print(f"伺服器錯誤：{e}")
+         return JSONResponse(
+            status_code=500,
+            content={
+                "error":True,
+                "message":"伺服器錯誤..."
+                }
+                )  
+
+
 
 
 if __name__ == '__main__':
