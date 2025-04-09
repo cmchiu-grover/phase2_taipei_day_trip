@@ -120,7 +120,7 @@
           <a class="web_title" href="/">台北一日遊</a>
           <nav class="header_nav">
             <ul>
-              <li>預定行程</li>
+              <li id="booking_li">預定行程</li>
               <li id="sign_in_up">
                 <p class="p_signin" style="cursor: pointer">登入</p>
                 /
@@ -157,11 +157,21 @@
 
           <h4 id="attraction_category_mrt"></h4>
           <form id="order_form" action="">
+            <input
+              id="attraction_id"
+              style="display: none"
+              name="attraction_id"
+            />
             <h3>訂購行程</h3>
             <h4>以此景點為中心的一日行程，帶您探索城市角落故事</h4>
             <div>
               <h3>選擇日期：</h3>
-              <input class="date" type="date" />
+              <input
+                id="booking_date"
+                class="booking_date"
+                type="date"
+                required
+              />
             </div>
             <div>
               <h3>選擇時間：</h3>
@@ -171,21 +181,26 @@
                   type="radio"
                   checked="checked"
                   name="selected_time"
-                  value="gozen"
+                  value="morning"
                 />
                 <span class="checkmark"></span>
               </label>
               <label class="container"
                 >下半天
-                <input type="radio" name="selected_time" value="gogo" />
+                <input type="radio" name="selected_time" value="afternoon" />
                 <span class="checkmark"></span>
               </label>
             </div>
             <div>
               <h3>導覽費用：</h3>
-              <p id="price">2000元</p>
+              <p id="price"></p>
             </div>
-            <button class="schedule_btn" type="submit" style="cursor: pointer">
+            <button
+              id="booking_btn"
+              class="schedule_btn"
+              type="submit"
+              style="cursor: pointer"
+            >
               開始預約行程
             </button>
           </form>
