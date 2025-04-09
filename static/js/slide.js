@@ -1,4 +1,5 @@
 import { dialogEventListeners } from "./dialog.js";
+import { signinArea } from "./variables.js";
 // let currentPage = 0;
 // let currentKeyword = "";
 // let isLoading = false;
@@ -73,12 +74,10 @@ class AttractionImg {
 async function getAttractionData() {
   // console.log(isLoading, currentPage);
   const url = window.location.pathname;
-
   const attractionId = url.match(/\/attraction\/(\d+)/);
-
-  // 提取 id
   const id = attractionId ? attractionId[1] : null;
-
+  const idInput = document.querySelector("#attraction_id");
+  idInput.value = id;
   const attrObject = await fetch(`/api/attraction/${id}`);
 
   const JSON = await attrObject.json();
@@ -205,9 +204,9 @@ const selectTime = document.querySelectorAll('input[name="selected_time"]');
 
 selectTime.forEach((checked) => {
   checked.addEventListener("change", () => {
-    if (checked.value === "gozen") {
+    if (checked.value === "morning") {
       priceP.textContent = "2000元";
-    } else if (checked.value === "gogo") {
+    } else if (checked.value === "afternoon") {
       priceP.textContent = "2500元";
     }
   });
@@ -238,6 +237,82 @@ async function showSignInOut() {
   }
 }
 
+const orderForm = document.querySelector("#order_form");
+
+orderForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const token = localStorage.getItem("access_token");
+  if (token) {
+    const response = await fetch("/api/user/auth", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const result = await response.json();
+    const userData = result.data;
+
+    if (userData) {
+      await bookingAttraction();
+      window.location.href = "/booking";
+    }
+  } else {
+    signinArea.showModal();
+  }
+});
+
+async function bookingAttraction() {
+  const attractionId = document.querySelector("#attraction_id").value;
+  console.log(`id is ${attractionId}...`);
+
+  const bookingDate = document.querySelector("#booking_date").value;
+  console.log(`booking date is ${bookingDate}...`);
+
+  const bookingTime = document.querySelector(
+    'input[name="selected_time"]:checked'
+  ).value;
+  console.log(`booking time is ${bookingTime}...`);
+
+  let bookingPrice = 0;
+  if (bookingTime === "morning") {
+    bookingPrice = 2000;
+  } else {
+    bookingPrice = 2500;
+  }
+
+  console.log(`booking price is ${bookingPrice} NTD...`);
+
+  const token = localStorage.getItem("access_token");
+
+  try {
+    const response = await fetch("/api/booking", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        attractionId: attractionId,
+        date: bookingDate,
+        time: bookingTime,
+        price: bookingPrice,
+      }),
+    });
+    const data = await response.json();
+    // console.log(data);
+
+    if (data.ok) {
+      // window.location.href = "/booking";
+      console.log(data);
+    } else {
+      window.alert("預定失敗");
+    }
+  } catch (e) {
+    console.log("response 失敗...");
+    console.log(e);
+  }
+}
+
 async function main() {
   try {
     await showSignInOut();
@@ -245,6 +320,8 @@ async function main() {
     await getAttractionData();
 
     showSlides(slideIndex);
+    selectTime[0].dispatchEvent(new Event("change"));
+    selectTime[0].checked = "checked";
   } catch (e) {
     console.log(e);
   }
