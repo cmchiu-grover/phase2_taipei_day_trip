@@ -13,6 +13,7 @@ import {
   signinMessage,
   signupForm,
   signinForm,
+  bookingPageLi,
 } from "./variables.js";
 
 import { signup, signin } from "./member.js";
@@ -65,6 +66,26 @@ function dialogEventListeners() {
   signupForm.addEventListener("submit", async (e) => {
     e.preventDefault();
     await signup();
+  });
+
+  bookingPageLi.addEventListener("click", async () => {
+    const token = localStorage.getItem("access_token");
+    if (token) {
+      const response = await fetch("/api/user/auth", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const result = await response.json();
+      const userData = result.data;
+
+      if (userData) {
+        window.location.href = "/booking";
+      }
+    } else {
+      signinArea.showModal();
+    }
   });
 }
 

@@ -17,6 +17,12 @@ ul {
   opacity: 0.5;
 }
 
+body.booking_page {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
 body {
   height: auto;
 }
@@ -207,10 +213,19 @@ body main header div.header_area nav.header_nav ul {
   display: flex;
   flex-direction: row;
 }
+body main header div.header_area nav.header_nav ul li#booking_li {
+  cursor: pointer;
+}
 body main header div.header_area nav.header_nav ul li {
   text-align: left;
   padding: 10px;
   font-size: 16px;
+  color: #666666;
+}
+body main header div.header_area nav.header_nav ul li a {
+  text-decoration: none;
+}
+body main header div.header_area nav.header_nav ul li a:visited {
   color: #666666;
 }
 body main div.welcome {
@@ -657,6 +672,196 @@ body main footer div {
   font-weight: 700;
   color: #ffffff;
 }
+body main.booking_page {
+  display: none;
+  flex: 0 0 auto;
+}
+body main.booking_page div.headline {
+  margin: 40px 0px 30px 0px;
+  padding-left: 10px;
+  width: 100%;
+  max-width: 1000px;
+  display: flex;
+  justify-content: flex-start;
+  font-size: 19px;
+  font-weight: 700;
+  color: #666666;
+}
+body main.booking_page section.empty {
+  display: flex;
+  width: 100%;
+  max-width: 1000px;
+  padding-left: 10px;
+  margin: 0 10px 40px 10px;
+  text-align: center;
+}
+body main.booking_page section.empty p.empty {
+  font-size: 16px;
+  font-weight: 400;
+  color: #666666;
+  line-height: 1.5;
+}
+body main.booking_page form.booking_order_form {
+  width: 100%;
+  max-width: 1200px;
+  padding: 0 10px 0 10px;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 40px;
+}
+body main.booking_page form.booking_order_form hr {
+  margin: 40px 0 40px 0;
+  border: solid 1px #e8e8e8;
+}
+body main.booking_page form.booking_order_form section.attraction_booked {
+  width: 100%;
+  max-width: 980px;
+  height: 200px;
+  display: flex;
+}
+body main.booking_page form.booking_order_form section.attraction_booked figure.booking_attr_img {
+  background-size: cover;
+  width: 250px;
+  height: 200px;
+}
+body main.booking_page form.booking_order_form section.attraction_booked div.attraction_info {
+  width: 100%;
+  max-width: 700px;
+  position: relative;
+  margin-left: 30px;
+  display: flex;
+  flex-direction: column;
+}
+body main.booking_page form.booking_order_form section.attraction_booked div.attraction_info div.attraction_name {
+  margin: 0 0 10px 0;
+}
+body main.booking_page form.booking_order_form section.attraction_booked div.attraction_info p.attraction_name,
+body main.booking_page form.booking_order_form section.attraction_booked div.attraction_info label.attraction_name {
+  font-size: 16px;
+  font-weight: 700;
+  color: #448899;
+}
+body main.booking_page form.booking_order_form section.attraction_booked div.attraction_info div {
+  display: flex;
+  margin-top: 10px;
+  color: #666666;
+  font-size: 16px;
+}
+body main.booking_page form.booking_order_form section.attraction_booked div.attraction_info div p {
+  font-weight: 700;
+  white-space: nowrap;
+}
+body main.booking_page form.booking_order_form section.attraction_booked div.attraction_info div label {
+  font-weight: 400;
+}
+body main.booking_page form.booking_order_form section.attraction_booked div.attraction_info button.delete_booking {
+  position: absolute; /* 設置絕對定位 */
+  top: 0;
+  right: 0;
+  z-index: 4; /* 設置 z-index 為 4，使其位於 form 上一層 */
+  background-image: url("/static/img/icon_delete.png"); /* 替換為你的圖片路徑 */
+  background-size: cover; /* 或 contain，根據需求 */
+  border: none;
+  background-color: #ffffff;
+  padding: 0;
+  width: 30px; /* 設定圖片寬度 */
+  height: 30px; /* 設定圖片高度 */
+  cursor: pointer;
+}
+body main.booking_page form.booking_order_form section.contact_form,
+body main.booking_page form.booking_order_form section.payment_info {
+  width: 100%;
+  max-width: 980px;
+  height: 227px;
+}
+body main.booking_page form.booking_order_form section.contact_form p.title,
+body main.booking_page form.booking_order_form section.payment_info p.title {
+  margin-bottom: 20px;
+  font-size: 19px;
+  font-weight: 700;
+}
+body main.booking_page form.booking_order_form section.contact_form p,
+body main.booking_page form.booking_order_form section.payment_info p {
+  font-size: 16px;
+  font-weight: 700;
+  color: #666666;
+  line-height: 24px;
+}
+body main.booking_page form.booking_order_form section.contact_form div,
+body main.booking_page form.booking_order_form section.payment_info div {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+body main.booking_page form.booking_order_form section.contact_form div label,
+body main.booking_page form.booking_order_form section.payment_info div label {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 400;
+  color: #666666;
+}
+body main.booking_page form.booking_order_form section.contact_form div input,
+body main.booking_page form.booking_order_form section.payment_info div input {
+  width: 200px;
+  height: 38px;
+  border-radius: 5px;
+  border: solid 1px #e8e8e8;
+  padding: 10px;
+}
+body main.booking_page form.booking_order_form section.contact_form div input::-moz-placeholder, body main.booking_page form.booking_order_form section.payment_info div input::-moz-placeholder {
+  color: #757575;
+  font-weight: 500;
+  font-size: 16px;
+}
+body main.booking_page form.booking_order_form section.contact_form div input::placeholder,
+body main.booking_page form.booking_order_form section.payment_info div input::placeholder {
+  color: #757575;
+  font-weight: 500;
+  font-size: 16px;
+}
+body main.booking_page form.booking_order_form section.button_area {
+  width: 100%;
+  max-width: 980px;
+  height: 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+body main.booking_page form.booking_order_form section.button_area p.total_price {
+  font-size: 16px;
+  font-weight: 700;
+  color: #666666;
+}
+body main.booking_page form.booking_order_form section.button_area button#payment_button {
+  width: 173px;
+  height: 36px;
+  background-color: #448899;
+  font-size: 19px;
+  font-weight: 400;
+  color: #ffffff;
+  border: 0;
+  border-radius: 5px 5px 5px 5px;
+  margin: 22px 0 22px 0;
+}
+body footer.booking_page {
+  flex: 1 0 auto;
+  height: auto;
+  width: 100%;
+  background-color: #757575;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+body footer.booking_page div.booking_page_footer_text {
+  display: none;
+  text-align: center;
+  font-size: 16px;
+  line-height: 14px;
+  font-weight: 700;
+  color: #ffffff;
+  margin-top: 45px;
+}
 
 @media screen and (max-width: 1200px) {
   body main article {
@@ -740,6 +945,35 @@ body main footer div {
   body main section.main_container section.second_container {
     height: 390px;
     width: calc(100% - 20px);
+  }
+  body.booking_page main.booking_page form.booking_order_form hr.first {
+    margin: 30px 0 40px 0;
+  }
+  body.booking_page main.booking_page form.booking_order_form section.attraction_booked {
+    height: auto;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+  }
+  body.booking_page main.booking_page form.booking_order_form section.attraction_booked figure.booking_attr_img {
+    width: 100%;
+    max-width: 600px;
+    height: 200px;
+    margin: 0 0 30px 0;
+    background-size: cover;
+    background-position: center;
+  }
+  body.booking_page main.booking_page form.booking_order_form section.attraction_booked div.attraction_info {
+    margin: 0;
+    height: 200px;
+  }
+  body.booking_page main.booking_page form.booking_order_form section.attraction_booked div.attraction_info button.delete_booking {
+    top: 170px;
+    right: 0;
+  }
+  body.booking_page main.booking_page form.booking_order_form section.contact_form,
+  body.booking_page main.booking_page form.booking_order_form section.payment_info {
+    height: auto;
   }
 }
 @media screen and (max-width: 360px) {
