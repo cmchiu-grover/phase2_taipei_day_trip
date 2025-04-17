@@ -184,24 +184,28 @@
         <section class="contact_form">
           <p class="title">您的聯絡資訊</p>
           <div>
-            <label
-              >聯絡姓名：
-              <input type="text" name="contact_name" id="contact_name" />
-            </label>
+            <label for="contact_name">聯絡姓名：</label>
+            <input type="text" name="contact_name" id="contact_name" required />
           </div>
 
           <div>
-            <label
-              >聯絡信箱：
-              <input type="email" name="contact_email" id="contact_email" />
-            </label>
+            <label for="contact_email">聯絡信箱：</label>
+            <input
+              type="email"
+              name="contact_email"
+              id="contact_email"
+              required
+            />
           </div>
 
           <div>
-            <label
-              >手機號碼：
-              <input type="tel" name="mobile_phone" />
-            </label>
+            <label for="mobile_phone">手機號碼：</label>
+            <input
+              type="tel"
+              name="contact_phone"
+              id="contact_phone"
+              required
+            />
           </div>
           <p>
             請保持手機暢通，準時到達，導覽人員將用手機與您聯繫，務必留下正確的聯絡方式。
@@ -211,40 +215,24 @@
         <section class="payment_info">
           <p class="title">信用卡付款資訊</p>
           <div>
-            <label
-              >卡片號碼：
-              <input
-                type="text"
-                id="creditCardNumber"
-                name="creditCardNumber"
-                placeholder="**** **** **** ****"
-              />
-            </label>
+            <label>卡片號碼：<br /></label>
+            <div class="tpfield" id="card-number"></div>
           </div>
 
           <div>
-            <label
-              >過期時間：
-              <input
-                type="text"
-                id="expiryDate"
-                name="expiryDate"
-                placeholder="MM / YY"
-              />
-            </label>
+            <label>過期時間：<br /></label>
+            <div class="tpfield" id="card-expiration-date"></div>
           </div>
 
           <div>
-            <label
-              >驗證密碼：
-              <input type="text" id="ccv" name="ccv" placeholder="CCV" />
-            </label>
+            <label>驗證密碼：<br /></label>
+            <div class="tpfield" id="card-ccv"></div>
           </div>
         </section>
         <hr />
         <section class="button_area">
           <p id="total_price" class="total_price"></p>
-          <button id="payment_button" style="cursor: pointer">
+          <button type="submit" id="payment_button" style="cursor: pointer">
             確認訂購並付款
           </button>
         </section>
@@ -253,7 +241,7 @@
     <footer class="booking_page">
       <div class="booking_page_footer_text">COPYRIGHT © 2021 台北一日遊</div>
     </footer>
-
+    <script src="https://js.tappaysdk.com/sdk/tpdirect/v5.14.0"></script>
     <script type="module" src="/static/js/booking.js"></script>
   </body>
 </html>

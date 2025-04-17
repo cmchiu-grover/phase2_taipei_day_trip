@@ -8,6 +8,7 @@ import jwt
 from passlib.context import CryptContext
 from datetime import datetime, timedelta, timezone
 from fastapi import Depends, HTTPException, status, Header, Request
+from datetime import datetime
 # from fastapi.security import OAuth2PasswordBearer
 
 
@@ -142,6 +143,33 @@ def checkUser(new_email):
         except:
             pass
 
+def query_user_data(user_id):
+    try:
+        cnx = get_connection_pool()  
+        cursor = cnx.cursor(dictionary=True)  
+
+        query = "SELECT id, name, email FROM users WHERE id = %s"
+        cursor.execute(query, (user_id,))
+        existing_user = cursor.fetchone()  
+
+        if existing_user:  
+            print("id 存在...")
+            return existing_user
+        else:
+            print("回傳 None...")
+            return None
+
+    except Exception as e:
+        print(f"錯誤: {e}")
+        return None
+    
+    finally:
+        try:
+            cursor.close()
+            cnx.close()
+        except:
+            pass
+
 
 def getPasswordHash(password):
     return pwd_context.hash(password)
@@ -240,7 +268,109 @@ def delete_booking(user_id):
         except:
             pass
         
+def insertOrder(user_id: str, order_data: dict):
+        try:
+            cnx = get_connection_pool()
+            cursor = cnx.cursor()
 
+            insert_query = """
+            INSERT INTO `orders` (
+                `order_id`,
+                `user_id`,
+                `attraction_id`,
+                `order_date`,
+                `order_time`,
+                `price`,
+                `phone`
+
+            ) VALUES (%s, %s, %s, %s, %s, %s, %s)
+            """
+            order = order_data["order"]
+            contact = order_data["order"]["contact"]
+            attraction = order_data["order"]["trip"]["attraction"]
+
+            timestamp = datetime.now().strftime("%Y%m%d%H%M%S%f")[:-3]
+
+            order_id = f"{timestamp}-{attraction["id"]}-{user_id}"
+
+            values = (
+            order_id,       
+            user_id,      
+            attraction["id"],
+            order["trip"]["date"],
+            order["trip"]["time"],
+            order["price"],
+            contact["phone"],
+            )
+
+            cursor.execute(insert_query, values)
+            cnx.commit()
+
+            print(f"Order number: {order_id} inserted successfully.")
+            return order_id
+
+        except mysql.connector.Error as err:
+            print(f"Error: {err}")
+            cnx.rollback()
+
+        finally:
+            try:
+                cursor.close()
+                cnx.close()
+            except:
+                pass
+
+def update_order_status(order_id: str):
+        try:
+            cnx = get_connection_pool()
+            cursor = cnx.cursor()
+
+            update_query = (
+                "UPDATE `orders` SET `status`=%s WHERE order_id = %s"
+            )
+
+            cursor.execute(update_query, ("PAID", order_id))
+            cnx.commit()
+
+            print(f"Order number: {order_id} updated successfully.")
+
+        except mysql.connector.Error as err:
+            print(f"Error: {err}")
+            cnx.rollback()
+
+        finally:
+            try:
+                cursor.close()
+                cnx.close()
+            except:
+                pass
+
+def get_order_data(order_id: str):
+    try:
+        cnx = get_connection_pool()  
+        cursor = cnx.cursor(dictionary=True)  
+
+        query = "SELECT * FROM orders WHERE order_id = %s"
+        cursor.execute(query, (order_id,))
+        existing_order = cursor.fetchone()  
+
+        if existing_order:  
+            print("email 存在...")
+            return existing_order
+        else:
+            print("回傳 None...")
+            return None
+
+    except Exception as e:
+        print(f"錯誤: {e}")
+        return None
+    
+    finally:
+        try:
+            cursor.close()
+            cnx.close()
+        except:
+            pass
 
 # asign_token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3QwMDIiLCJlbWFpbCI6InRlc3QwMDJAZ21haWwuY29tIiwidXNlcl9pZCI6MiwiZXhwIjoxNzQ0MDkwNTQyfQ.wx1QnQW3LgFadFc0we8m9sNG6Ql2LYAqfGccWjLRaVE"
 # # user_dict = getCurrentUser(asign_token)
