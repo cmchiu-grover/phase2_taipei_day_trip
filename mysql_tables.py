@@ -35,6 +35,25 @@ TABLES['bookings'] = (
     "  INDEX `index_booking_date` (`booking_date`)"  
     ") ENGINE=InnoDB")
 
+TABLES['orders'] = (
+   "CREATE TABLE orders ("
+    "`order_id` VARCHAR(32),"
+    "`user_id` INT(11) NOT NULL,"
+    "`attraction_id` INT(11) NOT NULL,"
+    "`order_date` DATE NOT NULL,"
+    "`order_time` ENUM('morning', 'afternoon') NOT NULL,"
+    "`price` INT(11) NOT NULL,"
+    "`phone` VARCHAR(32) NOT NULL,"
+    "`creation_time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,"
+    "`updated_time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,"
+    "`status` VARCHAR(32) NOT NULL DEFAULT 'UNPAID',"
+    "PRIMARY KEY (`order_id`),"
+    "FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,"
+    "FOREIGN KEY (`attraction_id`) REFERENCES `attraction` (`id`) ON DELETE CASCADE,"
+    "INDEX `index_user_id` (`user_id`),"
+    "INDEX `index_attraction_id` (`attraction_id`)"
+    ") ENGINE=InnoDB")
+
 cnx = get_connection_pool()
 cursor = cnx.cursor(dictionary=True)
 
