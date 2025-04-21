@@ -54,7 +54,7 @@ async function getPreOrderData() {
     },
   });
   const data = await response.json();
-  // console.log(data.data);
+  console.log(data.data);
   if (data.data) {
     bodyBookingPage.style.height = "auto";
     footerBookingPage.style.height = "104px";
@@ -77,6 +77,244 @@ async function getPreOrderData() {
     contactEmailInput.value = userEmail;
   }
 }
+
+TPDirect.setupSDK(
+  159803,
+  "app_5OIWI3n0raHZMQfEpvaYFhzfwmyrIB2gXRSMw9IGqKm5zqqtsCayuUnRiHxb",
+  "sandbox"
+);
+
+let fields = {
+  number: {
+    // css selector
+    element: document.querySelector("#card-number"),
+    placeholder: "**** **** **** ****",
+  },
+  expirationDate: {
+    // DOM object
+    element: document.querySelector("#card-expiration-date"),
+    placeholder: "MM / YY",
+  },
+  ccv: {
+    element: document.querySelector("#card-ccv"),
+    placeholder: "ccv",
+  },
+};
+
+TPDirect.card.setup({
+  fields: fields,
+  styles: {
+    // Style all elements
+    input: {
+      color: "gray",
+    },
+    // Styling ccv field
+    "input.ccv": {
+      // 'font-size': '16px'
+    },
+    // Styling expiration-date field
+    "input.expiration-date": {
+      // 'font-size': '16px'
+    },
+    // Styling card-number field
+    "input.card-number": {
+      // 'font-size': '16px'
+    },
+    // style focus state
+    ":focus": {
+      // 'color': 'black'
+    },
+    // style valid state
+    ".valid": {
+      color: "green",
+    },
+    // style invalid state
+    ".invalid": {
+      color: "red",
+    },
+    // Media queries
+    // Note that these apply to the iframe, not the root window.
+    "@media screen and (max-width: 400px)": {
+      input: {
+        // color: "orange",
+      },
+    },
+  },
+  // 此設定會顯示卡號輸入正確後，會顯示前六後四碼信用卡卡號
+  isMaskCreditCardNumber: true,
+  maskCreditCardNumberRange: {
+    beginIndex: 6,
+    endIndex: 11,
+  },
+});
+
+TPDirect.card.onUpdate(function (update) {
+  // update.canGetPrime === true
+  // --> you can call TPDirect.card.getPrime()
+  if (update.canGetPrime) {
+    // Enable submit Button to get prime.
+    // submitButton.removeAttribute('disabled')
+  } else {
+    // Disable submit Button to get prime.
+    // submitButton.setAttribute('disabled', true)
+  }
+
+  // cardTypes = ['mastercard', 'visa', 'jcb', 'amex', 'unknown']
+  if (update.cardType === "visa") {
+    // Handle card type visa.
+  }
+
+  // number 欄位是錯誤的
+  if (update.status.number === 2) {
+    // setNumberFormGroupToError()
+  } else if (update.status.number === 0) {
+    // setNumberFormGroupToSuccess()
+  } else {
+    // setNumberFormGroupToNormal()
+  }
+
+  if (update.status.expiry === 2) {
+    // setNumberFormGroupToError()
+  } else if (update.status.expiry === 0) {
+    // setNumberFormGroupToSuccess()
+  } else {
+    // setNumberFormGroupToNormal()
+  }
+
+  if (update.status.ccv === 2) {
+    // setNumberFormGroupToError()
+  } else if (update.status.ccv === 0) {
+    // setNumberFormGroupToSuccess()
+  } else {
+    // setNumberFormGroupToNormal()
+  }
+});
+
+function onSubmit(event) {
+  event.preventDefault();
+
+  // 取得 TapPay Fields 的 status
+  const tappayStatus = TPDirect.card.getTappayFieldsStatus();
+
+  // 確認是否可以 getPrime
+  if (tappayStatus.canGetPrime === false) {
+    alert("can not get prime");
+    return;
+  }
+
+  // Get prime
+  TPDirect.card.getPrime(async (result) => {
+    if (result.status !== 0) {
+      console.log("get prime error " + result.msg);
+      return;
+    }
+    console.log("get prime 成功，prime: ");
+    console.log(result);
+
+    const token = localStorage.getItem("access_token");
+    const bookingResponse = await fetch("/api/booking", {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const bookingData = await bookingResponse.json();
+    const userPhone = document.querySelector("#contact_phone").value;
+    const orderResponse = await fetch("/api/orders", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        prime: result.card.prime,
+        order: {
+          price: bookingData.data.price,
+          trip: {
+            attraction: {
+              id: bookingData.data.attraction.id,
+              name: bookingData.data.attraction.name,
+              address: bookingData.data.attraction.address,
+              image: bookingData.data.attraction.image,
+            },
+            date: bookingData.data.date,
+            time: bookingData.data.time,
+          },
+          contact: {
+            name: userName,
+            email: userEmail,
+            phone: userPhone,
+          },
+        },
+      }),
+    });
+    const orderResult = await orderResponse.json();
+    if (!orderResult.data) {
+      window.alert(`${orderResult.message}`);
+      return;
+    }
+
+    if (orderResult.data.payment.status === 0) {
+      const deleteResponse = await fetch("/api/booking", {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      window.location.href = `/thankyou?number=${orderResult.data.number}`;
+    } else {
+      window.alert(`${orderResult.message}`);
+      return;
+    }
+
+    // send prime to your server, to pay with Pay by Prime API .
+    // Pay By Prime Docs: https://docs.tappaysdk.com/tutorial/zh/back.html#pay-by-prime-api
+  });
+}
+
+// async function sendOrderData() {
+//   const token = localStorage.getItem("access_token");
+//   try {
+//     const response = await fetch("/api/order", {
+//       method: "POST",
+//       headers: {
+//         "Content-Type": "application/json",
+//         Authorization: `Bearer ${token}`,
+//       },
+//       body: JSON.stringify({
+//         prime: prime,
+//         order: {
+//           price: price,
+//           trip: {
+//             attraction: {
+//               id: attrationId,
+//               name: attrationName,
+//               address: attrationAdress,
+//               image: imgUrl,
+//             },
+//             date: bookingDate,
+//             time: bookingTime,
+//           },
+//           contact: {
+//             name: userName,
+//             email: userEmail,
+//             phone: userPhone,
+//           },
+//         },
+//       }),
+//     });
+
+//     const data = await response.json();
+//     if (data.ok) {
+//       console.log(data);
+//     } else {
+//       window.alert("訂單失敗");
+//     }
+//   } catch (e) {
+//     console.log("response 失敗...");
+//     console.log(e);
+//   }
+// }
 
 const deleteButton = document.querySelector("#delete_booking");
 
@@ -105,3 +343,4 @@ deleteButton.addEventListener("click", async (e) => {
     window.alert(result.message);
   }
 });
+formBookingForm.addEventListener("submit", onSubmit);
