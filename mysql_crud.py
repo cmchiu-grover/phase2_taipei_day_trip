@@ -54,8 +54,7 @@ class UserForm:
                 cnx.close()
             except:
                 pass
-    
-       
+        
 class BookingForm:
     def __init__(self, user_id, attraction_id, date, time, price):
         self.user_id = user_id
@@ -103,6 +102,77 @@ class BookingForm:
             cnx.commit()
 
             print(f"User's booking {self.attraction_id} updated successfully.")
+
+        except mysql.connector.Error as err:
+            print(f"Error: {err}")
+            cnx.rollback()
+
+        finally:
+            try:
+                cursor.close()
+                cnx.close()
+            except:
+                pass
+
+class Attraction:
+    def __init__(self, id, name, description, address, transport, rate, lat, lng, mrt_id, category_id):
+        self.id = id
+        self.name = name
+        self.description = description
+        self.address = address
+        self.transport = transport
+        self.rate = rate
+        self.lat = lat
+        self.lng = lng
+        self.mrt_id = mrt_id
+        self.category_id = category_id
+    
+    def insert_attraction(self):
+        try:
+            cnx = get_connection_pool()
+            cursor = cnx.cursor()
+
+            insert_query = (
+                "INSERT INTO `attraction` (`id`, `name`, `description`, `address`, `transport`, `rate`, `lat`, `lng`, `mrt_id`, `category_id`) "
+                "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+            )
+
+            cursor.execute(insert_query, (self.id, self.name, self.description, self.address, self.transport,self.rate, self.lat, self.lng, self.mrt_id, self.category_id))
+            cnx.commit()
+
+            print(f"Attraction {self.name} inserted successfully with id {self.id}.")
+            return self.id
+
+        except mysql.connector.Error as err:
+            print(f"Error: {err}")
+            cnx.rollback()
+
+        finally:
+            try:
+                cursor.close()
+                cnx.close()
+            except:
+                pass
+
+class Image:
+    def __init__(self, attraction_id, url):
+        self.attraction_id = attraction_id
+        self.url = url
+
+    def insert_image(self):
+        try:
+            cnx = get_connection_pool()
+            cursor = cnx.cursor()
+
+            insert_query = (
+                "INSERT INTO `images` (`attraction_id`, `url`) "
+                "VALUES (%s, %s)"
+            )
+
+            cursor.execute(insert_query, (self.attraction_id, self.url))
+            cnx.commit()
+
+            # print(f"Image inserted successfully.")
 
         except mysql.connector.Error as err:
             print(f"Error: {err}")

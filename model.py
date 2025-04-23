@@ -1,97 +1,199 @@
-import os
+from mysql_connect import get_connection_pool
 import re
 from dotenv import load_dotenv
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
 from contextlib import contextmanager
-from tables import Attraction, Mrt, Category, Image, Base
+from mysql_crud import Attraction, Image
 import json
 from json import load
 
-print(os.getcwd())
 
-load_dotenv()
-MySQL_DB_URL = os.getenv("MySQL_DB_URL")
-
-engine = create_engine(
-    MySQL_DB_URL,
-    pool_size=10,
-    max_overflow=20,
-    pool_recycle=1800,  
-    pool_pre_ping=True   
-)
-
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
-@contextmanager
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
-
-Base.metadata.create_all(engine)
 
 def spiltUrl(url):
     img_url_list = re.findall(r'https?://[^\s]+?\.(?:jpg|JPG|png|PNG)', url)
     return img_url_list
 
+def query_mrt_name(mrt_name):
+    try:
+        cnx = get_connection_pool()
+        cursor = cnx.cursor(dictionary=True)
+        query = "SELECT * FROM mrt_test WHERE name = %s"
+        cursor.execute(query, (mrt_name,))
+        existing_mrt = cursor.fetchone()
+        if existing_mrt:  
+            print("mrt 存在...")
+            return existing_mrt
+        else:
+            print("回傳 None...")
+            return None
+    
+    except Exception as e:
+        print(f"錯誤：{e}")
+        return None
+    
+    finally:
+        try:
+            cursor.close()
+            cnx.close()
+        except:
+            pass
+
+def insert_mrt_name(mrt_name):
+    try:
+        cnx = get_connection_pool()
+        cursor = cnx.cursor(dictionary=True)
+        insert_query = """
+            INSERT INTO `mrt_test` (
+                `name`
+            ) VALUES (%s)
+            """
+        cursor.execute(insert_query, (mrt_name,))
+        cnx.commit()
+
+        new_mrt_id = cursor.lastrowid
+        print(f"MRT name '{mrt_name}' inserted successfully with id {new_mrt_id}.")
+        return {"id": new_mrt_id}
+    
+    except Exception as e:
+        print(f"錯誤：{e}")
+        return None
+    
+    finally:
+        try:
+            cursor.close()
+            cnx.close()
+        except:
+            pass
+
+def query_category_name(category_name):
+    try:
+        cnx = get_connection_pool()
+        cursor = cnx.cursor(dictionary=True)
+        query = "SELECT * FROM category_test WHERE name = %s"
+        cursor.execute(query, (category_name,))
+        existing_category = cursor.fetchone()
+        if existing_category:  
+            print("category 存在...")
+            return existing_category
+        else:
+            print("回傳 None...")
+            return None
+    
+    except Exception as e:
+        print(f"錯誤：{e}")
+        return None
+    
+    finally:
+        try:
+            cursor.close()
+            cnx.close()
+        except:
+            pass
+
+def insert_category_name(category_name):
+    try:
+        cnx = get_connection_pool()
+        cursor = cnx.cursor(dictionary=True)
+        insert_query = """
+            INSERT INTO `category_test` (
+                `name`
+            ) VALUES (%s)
+            """
+        cursor.execute(insert_query, (category_name,))
+        cnx.commit()
+
+        new_category_id = cursor.lastrowid
+        print(f"Category name '{category_name}' inserted successfully with id {new_category_id}.")
+        return {"id": new_category_id}
+    
+    except Exception as e:
+        print(f"錯誤：{e}")
+        return None
+    
+    finally:
+        try:
+            cursor.close()
+            cnx.close()
+        except:
+            pass
+
+def query_attraction_name(attraction_name):
+    try:
+        cnx = get_connection_pool()
+        cursor = cnx.cursor(dictionary=True)
+        query = "SELECT * FROM attraction_test WHERE name = %s"
+        cursor.execute(query, (attraction_name,))
+        existing_attraction = cursor.fetchone()
+        if existing_attraction:  
+            print("attraction 存在...")
+            return existing_attraction
+        else:
+            print("回傳 None...")
+            return None
+    
+    except Exception as e:
+        print(f"錯誤：{e}")
+        return None
+    
+    finally:
+        try:
+            cursor.close()
+            cnx.close()
+        except:
+            pass
+
+
 def insert2Tables():
     with open("data/taipei-attractions.json", "r", encoding="utf-8") as jsonFile:
         data = json.load(jsonFile)
     results_list = data.get("result").get("results")
-    with get_db() as db:
-        for result in results_list:
-            mrt_name = result.get("MRT")
-            mrt_id = None
-            if mrt_name:
-                mrt = db.query(Mrt).filter(Mrt.name == mrt_name).first()
-                if not mrt:
-                    mrt = Mrt(name=mrt_name)
-                    db.add(mrt)
-                    db.commit()
-                    db.refresh(mrt)
-                mrt_id = mrt.id
-            
-            category_name = result.get("CAT")
-            category_id = None
-            if category_name:
-                category = db.query(Category).filter(Category.name == category_name).first()
-                if not category:
-                    category = Category(name=category_name)
-                    db.add(category)
-                    db.commit()
-                    db.refresh(category)
-                category_id = category.id
-            
-            attraction = db.query(Attraction).filter(Attraction.name == result["name"]).first()
-            if not attraction:
-                new_attraction = Attraction(
-                    id = int(result["_id"]),
-                    name = result["name"],
-                    description = result["description"],
-                    address = result["address"],
-                    transport = result["direction"],
-                    rate = result["rate"],
-                    lat = result["latitude"],
-                    lng = result["longitude"],
-                    mrt_id=mrt_id,
-                    category_id=category_id
-                    )
-                db.add(new_attraction)
-                db.commit()
-                db.refresh(new_attraction)
 
-                if "file" in result:
-                    image_urls = spiltUrl(result["file"])
-                    for url in image_urls:
-                        new_image = Image(attraction_id=new_attraction.id, url=url)
-                        db.add(new_image)
+    for result in results_list:
+        # print(f"===========開始 {result["name"]}==============")
+        mrt_name = result.get("MRT")
+        mrt_id = None
+        if mrt_name:
+            mrt_data = query_mrt_name(mrt_name)
+            if not mrt_data:
+                new_mrt_id = insert_mrt_name(mrt_name)
+                mrt_id = new_mrt_id["id"]
+            else:
+                mrt_id = mrt_data["id"]
+        
+        category_name = result.get("CAT")
+        category_id = None
+        if category_name:
+            category_data = query_category_name(category_name)
+            
+            if not category_data:
+                new_category_id = insert_category_name(category_name)
+                category_id = new_category_id["id"]
+            else:
+                category_id = category_data["id"]
+        
+        attraction = query_attraction_name(result["name"])
+        if not attraction:
+            new_attraction = Attraction(
+                result["_id"],
+                result["name"],
+                result["description"],
+                result["address"],
+                result["direction"],
+                result["rate"],
+                result["latitude"],
+                result["longitude"],
+                mrt_id,
+                category_id
+                )
 
-                db.commit()
-    
+            new_attraction_id = new_attraction.insert_attraction()
+            print(new_attraction_id)
+
+            if "file" in result:
+                image_urls = spiltUrl(result["file"])
+                for url in image_urls:
+                    new_image = Image(new_attraction_id, url)
+                    new_image.insert_image()
+
     print("資料插入完成！")
 
 if __name__ == "__main__":
