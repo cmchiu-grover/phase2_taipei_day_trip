@@ -2,8 +2,10 @@ from __future__ import print_function
 from mysql_connect import get_connection_pool
 import mysql.connector
 from mysql.connector import errorcode
-
-DB_NAME = 'taipei_day_trip'
+import os
+from dotenv import load_dotenv
+load_dotenv()
+DB_NAME = os.getenv("DATABASE")
 TABLES = {}
 TABLES['users'] = (
     "CREATE TABLE `users` ("
@@ -161,14 +163,3 @@ def mysql_main():
 
 if __name__ == "__main__":
     mysql_main()
-
-# email = 'test001@gmail.com'
-
-# existing_email = checkUsername('test001@gmail.com')
-
-# print(existing_email)
-
-# if existing_email == email:
-#     print("email 已存在")
-# else:
-#     print("email 可使用")

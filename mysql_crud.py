@@ -9,14 +9,11 @@ from passlib.context import CryptContext
 from datetime import datetime, timedelta, timezone
 from fastapi import Depends, HTTPException, status, Header, Request
 from datetime import datetime
-# from fastapi.security import OAuth2PasswordBearer
-
 
 load_dotenv()
 
 SECRET_KEY = os.getenv("SECRET_KEY")
-ALGORITHM = "HS256"
-# oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/user/auth")
+ALGORITHM = os.getenv("ALGORITHM")
 
 cnx = get_connection_pool()
 cursor = cnx.cursor(dictionary=True)
@@ -442,9 +439,3 @@ def get_order_data(order_id: str):
         except:
             pass
 
-# asign_token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3QwMDIiLCJlbWFpbCI6InRlc3QwMDJAZ21haWwuY29tIiwidXNlcl9pZCI6MiwiZXhwIjoxNzQ0MDkwNTQyfQ.wx1QnQW3LgFadFc0we8m9sNG6Ql2LYAqfGccWjLRaVE"
-# # user_dict = getCurrentUser(asign_token)
-# # print(user_dict)
-
-# payload_test = jwt.decode(asign_token, SECRET_KEY, algorithms=[ALGORITHM])
-# print(payload_test)
