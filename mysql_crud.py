@@ -9,14 +9,11 @@ from passlib.context import CryptContext
 from datetime import datetime, timedelta, timezone
 from fastapi import Depends, HTTPException, status, Header, Request
 from datetime import datetime
-# from fastapi.security import OAuth2PasswordBearer
-
 
 load_dotenv()
 
 SECRET_KEY = os.getenv("SECRET_KEY")
-ALGORITHM = "HS256"
-# oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/user/auth")
+ALGORITHM = os.getenv("ALGORITHM")
 
 cnx = get_connection_pool()
 cursor = cnx.cursor(dictionary=True)
@@ -54,8 +51,7 @@ class UserForm:
                 cnx.close()
             except:
                 pass
-    
-       
+        
 class BookingForm:
     def __init__(self, user_id, attraction_id, date, time, price):
         self.user_id = user_id
@@ -103,6 +99,77 @@ class BookingForm:
             cnx.commit()
 
             print(f"User's booking {self.attraction_id} updated successfully.")
+
+        except mysql.connector.Error as err:
+            print(f"Error: {err}")
+            cnx.rollback()
+
+        finally:
+            try:
+                cursor.close()
+                cnx.close()
+            except:
+                pass
+
+class Attraction:
+    def __init__(self, id, name, description, address, transport, rate, lat, lng, mrt_id, category_id):
+        self.id = id
+        self.name = name
+        self.description = description
+        self.address = address
+        self.transport = transport
+        self.rate = rate
+        self.lat = lat
+        self.lng = lng
+        self.mrt_id = mrt_id
+        self.category_id = category_id
+    
+    def insert_attraction(self):
+        try:
+            cnx = get_connection_pool()
+            cursor = cnx.cursor()
+
+            insert_query = (
+                "INSERT INTO `attraction` (`id`, `name`, `description`, `address`, `transport`, `rate`, `lat`, `lng`, `mrt_id`, `category_id`) "
+                "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+            )
+
+            cursor.execute(insert_query, (self.id, self.name, self.description, self.address, self.transport,self.rate, self.lat, self.lng, self.mrt_id, self.category_id))
+            cnx.commit()
+
+            print(f"Attraction {self.name} inserted successfully with id {self.id}.")
+            return self.id
+
+        except mysql.connector.Error as err:
+            print(f"Error: {err}")
+            cnx.rollback()
+
+        finally:
+            try:
+                cursor.close()
+                cnx.close()
+            except:
+                pass
+
+class Image:
+    def __init__(self, attraction_id, url):
+        self.attraction_id = attraction_id
+        self.url = url
+
+    def insert_image(self):
+        try:
+            cnx = get_connection_pool()
+            cursor = cnx.cursor()
+
+            insert_query = (
+                "INSERT INTO `images` (`attraction_id`, `url`) "
+                "VALUES (%s, %s)"
+            )
+
+            cursor.execute(insert_query, (self.attraction_id, self.url))
+            cnx.commit()
+
+            # print(f"Image inserted successfully.")
 
         except mysql.connector.Error as err:
             print(f"Error: {err}")
@@ -372,9 +439,3 @@ def get_order_data(order_id: str):
         except:
             pass
 
-# asign_token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3QwMDIiLCJlbWFpbCI6InRlc3QwMDJAZ21haWwuY29tIiwidXNlcl9pZCI6MiwiZXhwIjoxNzQ0MDkwNTQyfQ.wx1QnQW3LgFadFc0we8m9sNG6Ql2LYAqfGccWjLRaVE"
-# # user_dict = getCurrentUser(asign_token)
-# # print(user_dict)
-
-# payload_test = jwt.decode(asign_token, SECRET_KEY, algorithms=[ALGORITHM])
-# print(payload_test)

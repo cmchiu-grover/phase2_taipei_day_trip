@@ -2,8 +2,10 @@ from __future__ import print_function
 from mysql_connect import get_connection_pool
 import mysql.connector
 from mysql.connector import errorcode
-
-DB_NAME = 'taipei_day_trip'
+import os
+from dotenv import load_dotenv
+load_dotenv()
+DB_NAME = os.getenv("DATABASE")
 TABLES = {}
 TABLES['users'] = (
     "CREATE TABLE `users` ("
@@ -52,6 +54,56 @@ TABLES['orders'] = (
     "FOREIGN KEY (`attraction_id`) REFERENCES `attraction` (`id`) ON DELETE CASCADE,"
     "INDEX `index_user_id` (`user_id`),"
     "INDEX `index_attraction_id` (`attraction_id`)"
+    ") ENGINE=InnoDB")
+
+TABLES['mrt'] = (
+   "CREATE TABLE mrt ("
+    "  `id` INT(11) NOT NULL AUTO_INCREMENT,"
+    "  `name` VARCHAR(255) NOT NULL,"
+    "  PRIMARY KEY (`id`),"
+    "  INDEX `index_id` (`id`),"
+    "  INDEX `index_name` (`name`)"
+    ") ENGINE=InnoDB")
+
+TABLES['category'] = (
+   "CREATE TABLE category ("
+    "  `id` INT(11) NOT NULL AUTO_INCREMENT,"
+    "  `name` VARCHAR(255) NOT NULL,"
+    "  PRIMARY KEY (`id`),"
+    "  INDEX `index_id` (`id`),"
+    "  INDEX `index_name` (`name`)"
+    ") ENGINE=InnoDB")
+
+TABLES['attraction'] = (
+   "CREATE TABLE attraction ("
+    "  `id` INT(11) NOT NULL,"
+    "  `name` VARCHAR(255) NOT NULL,"
+    "  `description` VARCHAR(10000) NOT NULL,"
+    "  `address` VARCHAR(255) NOT NULL,"
+    "  `transport` VARCHAR(1000) NOT NULL,"
+    "  `rate` TINYINT CHECK (`rate` BETWEEN 1 AND 5),"
+    "  `lat` DECIMAL(9,6)  NOT NULL,"
+    "  `lng` DECIMAL(9,6)  NOT NULL,"
+    "  `mrt_id` INT(11),"
+    "  `category_id` INT(11) NOT NULL,"
+    "  PRIMARY KEY (`id`),"
+    "  FOREIGN KEY (`mrt_id`) REFERENCES `mrt` (`id`) ON DELETE CASCADE,"
+    "  FOREIGN KEY (`category_id`) REFERENCES `category` (`id`) ON DELETE CASCADE,"
+    "  INDEX `index_id` (`id`),"
+    "  INDEX `index_mrt_id` (`mrt_id`),"
+    "  INDEX `index_category_id` (`category_id`)"    
+    ") ENGINE=InnoDB")
+
+TABLES['images'] = (
+   "CREATE TABLE images ("
+    "  `id` INT(11) NOT NULL AUTO_INCREMENT,"
+    "  `attraction_id` INT(11) NOT NULL,"
+    "  `url` VARCHAR(255) NOT NULL,"
+    "  PRIMARY KEY (`id`),"
+    "  FOREIGN KEY (`attraction_id`) REFERENCES `attraction` (`id`) ON DELETE CASCADE,"
+    "  INDEX `index_id` (`id`),"
+    "  INDEX `index_attraction_id` (`attraction_id`),"
+    "  INDEX `index_url` (`url`)"
     ") ENGINE=InnoDB")
 
 cnx = get_connection_pool()
@@ -111,14 +163,3 @@ def mysql_main():
 
 if __name__ == "__main__":
     mysql_main()
-
-# email = 'test001@gmail.com'
-
-# existing_email = checkUsername('test001@gmail.com')
-
-# print(existing_email)
-
-# if existing_email == email:
-#     print("email 已存在")
-# else:
-#     print("email 可使用")

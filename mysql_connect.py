@@ -8,7 +8,7 @@ dbconfig = {
     "host": "localhost",
     "user": os.getenv("MYSQL_USER"),
     "password": os.getenv("MYSQL_PASSWORD"),
-    "database": "taipei_day_trip",
+    "database": os.getenv("DATABASE"),
     "use_pure": True 
 }
 
